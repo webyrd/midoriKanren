@@ -60,5 +60,8 @@ The initial modifications to metaKanren were made by Will Byrd October 3--4, 202
 ```
 An Imperishable Wonderland of Infinite Fun
 
-In which we will discover the Wonders of Relational Programming, and learn of its deep connections with Functional Programming. We will explore bizarre programs, and muse about what comes next, now that Functional Programming has won.
+In which we will discover the Wonders of Relational Programming, and
+learn of its deep connections with Functional Programming. We will
+explore bizarre programs, and muse about what comes next, now that
+Functional Programming has won.
 ```
