@@ -2,7 +2,9 @@
 
 midoriKanren is a relational interpreter combining miniKanren-in-miniKanren and Scheme-in-miniKanren.
 
-midoriKanren is a modified and extended version of Bharathi Ramana Joshi's `metaKanren`, mashed up with ideas and implementation techniques from the various relational Scheme interpreters that we and others have created over the years (for example, as seen in the 2017 ICFP Pearl).
+midoriKanren is a modified and extended version of Bharathi Ramana Joshi's 2021 version of `metaKanren`, mashed up with ideas and implementation techniques from the various relational Scheme interpreters that we and others have created over the years (for example, as seen in the 2017 ICFP Pearl).
+
+Bharath's Master's dissertation describes and updated metaKanren with a nicer syntax than the version from 2021.  Will implemented some of these improvements independently for midoriKanren, when preparing for his Lambda World 2024 talk (Will had forgotten that Barath's Master's dissertation contained these improvements--whoops!).  The first 'TODO' for midoriKanren will be to update midoriKanren to take advantage of Bharath's improvements, where those make sense in the context of the goals of midoriKanren.
 
 midoriKanren has been tested in Chez Scheme 10.0.0.
 
@@ -22,7 +24,7 @@ https://tspace.library.utoronto.ca/handle/1807/110263
 
 https://www.youtube.com/watch?v=1bUIRi6pZow
 
-Also, Bharath's Master's Dissertation gives a more detailed and updated description of metaKanren:
+Also, Bharath's Master's Dissertation gives a more detailed  description of an updated metaKanren (which Will should have started from originally, probably!):
 
 https://web2py.iiit.ac.in/research_centres/publications/download/mastersthesis.pdf.b81e61d00632f930.746865736973202832292e706466.pdf
 

@@ -2,6 +2,10 @@
 
 ## midoriKanren Improvements
 
+First TODO: go through Barath's Master's dissertation and see which improvements to the 2021 metaKanren make sense to port over to midoriKanren:
+
+https://web2py.iiit.ac.in/research_centres/publications/download/mastersthesis.pdf.b81e61d00632f930.746865736973202832292e706466.pdf
+
 Write down and keep updated the new grammar.
 
 Write a parser, outside of midoriKanren, in regular Scheme, that parses a program and gives useful errors.
