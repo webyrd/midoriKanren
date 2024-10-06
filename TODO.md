@@ -10,8 +10,14 @@ Use a non-empty initial environment, and make built-in functions primitives, lik
 
 Modify the interpreter to allow Scheme and miniKanren to be mixed more freely.  For example, the outer expression shouldn't have to be a `run`.  In fact, Scheme code should be able to call multiple `run` expressions.
 
+Add `conda`, `condu`, `onceo`, etc., to the relational mk interpreter.  Play with logical side effects in the context of the relational interpreter.
+
 
 ## midoriKanren Experiments
+
+Come up with more interesting and creative queries!!
+
+Write queries that fully take advantage of the `run` "collecting" semantics.  (Suggested by Nada Amin)
 
 Add normalization-by-evaluation evaluator.
 
