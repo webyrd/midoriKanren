@@ -100,3 +100,7 @@ Add probabilistic interpreter.
 Add input/output, errors, mutation, and other effects.
 
 Staging, supercompilation, optimizing compilers, etc.  "Throw all the computer science at it," as Edward Kmett would say.
+
+# Questions
+
+? Do we need to go deeper than one level of interpretation?  Do we gain useful expressive power, or is one level sufficient?
