@@ -27,6 +27,8 @@ Use CLP(FD) or CLP(Z) for `run n` counts, rather than Peano numerals in the form
 
 Try adding `copy_term` as an operator---can we get a reasonable relational behavior?
 
+Implement Hoare logic, relational style, with CLP(Set)
+
 Split-environment representation (or use sets).
 
 Write down and keep updated the new grammar.
