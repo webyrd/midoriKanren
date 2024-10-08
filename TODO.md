@@ -6,6 +6,27 @@ First TODO: go through Barath's Master's dissertation and see which improvements
 
 https://web2py.iiit.ac.in/research_centres/publications/download/mastersthesis.pdf.b81e61d00632f930.746865736973202832292e706466.pdf
 
+Currently there is a single-binding `let` form supported by `eval-gexpro`, and no `let` expression supported by `eval-schemeo`.  Also, there are currently separate closures for relations (`closr`) and closures for Scheme procedures (`scheme-closr`).  Need to rethink how all the various `evalo`s and closure types should be combined, how `lambda` should be involved, how `define` and `defrel` should be added, etc.
+
+Once `let` is implemented properly, these sorts of tests should work:
+
+```
+(test "trs1-1b"
+  ;; from frame 60 on page 15 of TRS1
+  (run* (x)
+    (eval-programo
+     `(run* (q)
+        (let ((a (== #t q))
+              (b (== #f q)))
+          b))
+     x))
+  '((#f)))
+```
+
+Use CLP(FD) or CLP(Z) for `run n` counts, rather than Peano numerals in the form of nested parens.
+
+Split-environment representation (or use sets).
+
 Write down and keep updated the new grammar.
 
 Write a parser, outside of midoriKanren, in regular Scheme, that parses a program and gives useful errors.
