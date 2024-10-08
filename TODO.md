@@ -25,6 +25,8 @@ Once `let` is implemented properly, these sorts of tests should work:
 
 Use CLP(FD) or CLP(Z) for `run n` counts, rather than Peano numerals in the form of nested parens.
 
+Try adding `copy_term` as an operator---can we get a reasonable relational behavior?
+
 Split-environment representation (or use sets).
 
 Write down and keep updated the new grammar.
