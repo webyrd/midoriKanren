@@ -53,7 +53,7 @@ The resulting relational interpreter will allow us to push further the idea of u
 
 In other words, everything becomes relational through this One Weird Trick!
 
-Just as Simon Peyton-Jones says that Haskell is the finest language he knows of for imperative programming, we want to be able to say that midoriKanren is the finest finest language we know of for programming with logical side-effects.
+Just as Simon Peyton-Jones says that Haskell is the finest language he knows of for imperative programming, we want to be able to say that midoriKanren is the finest language we know of for programming with logical side-effects.
 
 Please see `TODO.md` for a list of pending improvements and experiments.
 
