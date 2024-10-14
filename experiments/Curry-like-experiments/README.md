@@ -37,6 +37,8 @@ Michael made up some syntax as a starting point for what we might try to impleme
 
 Refine the syntax, implement anything critical that is missing, and try it out!
 
+Also, both Michael and Nada Amin think that the aggregation behavior is interesting and important.  Nada is interested in what we can express from getting back aggregated answers from `run^n`/`run*` for example.  What games can you play with `absento` over these aggregated results?  What changes/improves if you use CLP(Set) to represent the results from a `run`?  Etc.  Lots to explore here.
+
 ## Future Work
 
 Try more Curry examples, think about needed narrowing and residuation.
