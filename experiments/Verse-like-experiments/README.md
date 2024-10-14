@@ -6,7 +6,7 @@ Just like we can potentially express Curry-like functional-logic programs in mid
 
 ## Approach
 
-Go through the Verse Calulus paper and see what we can express.
+Go through the [2023 ICFP Verse Calulus paper](https://simon.peytonjones.org/verse-calculus/) and see what we can express.
 
 ## Future Work
 
