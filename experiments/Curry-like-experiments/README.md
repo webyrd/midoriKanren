@@ -4,6 +4,18 @@
 
 Michael Ballantyne proposed using midoriKanren to emulate Curry-style functional-logic programming.
 
+Function bodies should be able to contain constraints, and goals should be able to express things like:
+
+```
+(== x (func y z))
+```
+
+Michael wasn't sure whether shallow or deep embeddings would work best (or maybe a combination?).
+
+Michael pointed out that the in the code from my Lambda World 2024 talk, non-determinism from holes (logic variables) in the Scheme portions show up "at the outer level," while non-determinism from `disj` shows up "at the inner level."  Michael thinks in the mixture of Scheme and mk he envisions, the non-determinism would show up at the *same level*, like in a functional-logic programming language. (WEB: I'm not sure I entirely understand what Michael means--a few examples could go a long way.)
+
+Michael also thinks this would be particulatly interested for staged evaluation.
+
 Michael found this example from the [Curry Wikipedia page](https://en.wikipedia.org/wiki/Curry_%28programming_language%29).
 
 Given a functional definition of `append`, define a function that gets the last element of it:
