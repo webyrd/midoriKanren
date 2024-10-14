@@ -75,6 +75,10 @@ Come up with more interesting and creative queries!!
 
 Write queries that fully take advantage of the `run` "collecting" semantics.  (Suggested by Nada Amin)
 
+Try to implement meta-interpretive learning (MIL), as in Metagol, from Inductive Logic Programming, using query variables from the outer `run` to represent the higher-order predicates.  Use this approach to implement predicate invention using MIL-style rules, such as the chain rule, as seen in the 'Turning 30: New Ideas in Inductive Logic Programming' IJCAI-20 paper by Cropper, Dumančić, and Muggleton:
+
+https://www.ijcai.org/Proceedings/2020/0673.pdf
+
 Add explicit errors to the Scheme portion.
 
 Experiment with Prolog-style meta-programming and meta-interpreters.  Do `asset` and `retract` make sense now?  Could we write a simple Prolog interpreter this way?
