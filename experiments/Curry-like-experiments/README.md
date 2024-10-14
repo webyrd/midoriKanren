@@ -12,7 +12,7 @@ Function bodies should be able to contain constraints, and goals should be able 
 
 Michael wasn't sure whether shallow or deep embeddings would work best (or maybe a combination?).
 
-Michael pointed out that the in the code from my Lambda World 2024 talk, non-determinism from holes (logic variables) in the Scheme portions show up "at the outer level," while non-determinism from `disj` shows up "at the inner level."  Michael thinks in the mixture of Scheme and mk he envisions, the non-determinism would show up at the *same level*, like in a functional-logic programming language. (WEB: I'm not sure I entirely understand what Michael means--a few examples could go a long way.)
+Michael pointed out that the in the code from my Lambda World 2024 talk, non-determinism from holes (logic variables) in the Scheme portions show up "at the outer level," while non-determinism from `disj` shows up "at the inner level."  Michael thinks in the mixture of Scheme and mk he envisions, the non-determinism would show up at the *same level*, like in a functional-logic programming language. (WEB: I'm not sure I entirely understand what Michael means--a few examples could go a long way.  Perhaps the `Non-determinism` section in the [Curry Wikipedia page](https://en.wikipedia.org/wiki/Curry_%28programming_language%29) is a good place to start.)
 
 Michael also thinks this would be particulatly interested for staged evaluation.
 
