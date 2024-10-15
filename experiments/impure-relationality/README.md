@@ -19,3 +19,5 @@ As Bharath points out, we need to heed Oleg's warning about the combination of c
 ## Future Work
 
 Encode a Prolog interpreter with `assert`, `retract`, and all the other stuff.
+
+Prolog-style meta-interpreter in metaKanren and/or midoriKanren.
