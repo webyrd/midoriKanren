@@ -10,9 +10,11 @@ Bharath has implemented non-relational control operations in the extended metaKa
 
 ## Approach
 
-Look at Bharath's work on non-relational control operators.
+Look at Bharath's work on non-relational control operators: `ifte`, `once`, and `var?`/`varo`.  Are these in the `condau` branch of the private repo?
 
-Carefully encode one or more interesting operations that don't seem to have a purely relational interpretation.  `conda`/`condu` are obvious candidates.  Beware the "G-rule"!
+As needed, carefully encode one or more interesting operations that don't seem to have a purely relational interpretation.  `conda`/`condu` are obvious candidates.  Beware the "G-rule"!
+
+As Bharath points out, we need to heed Oleg's warning about the combination of constraints and `conda`/`condu` resulting in unsound behavior.
 
 ## Future Work
 
