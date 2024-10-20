@@ -991,3 +991,57 @@
            (== (f 'cat) y)))
       q)))
   '(((cat . cat))))
+
+(test "evalo-run*-appendo-1"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((appendo (lambda (l s out)
+                           (conde
+                             ((== '() l) (== s out))
+                             ((fresh (a d res)
+                                (== (cons a d) l)
+                                (== (cons a res) out)
+                                (appendo d s res)))))))
+         (run* (q)
+           (appendo '(a) '(b) q)))
+      q)))
+  '(((a b))))
+
+(test "evalo-run-appendo-1"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((appendo (lambda (l s out)
+                           (conde
+                             ((== '() l) (== s out))
+                             ((fresh (a d res)
+                                (== (cons a d) l)
+                                (== (cons a res) out)
+                                (appendo d s res)))))))
+         (run ',(peano 1) (x)
+           (appendo '(a) x '(a b))))
+      q)))
+  '(((b))))
+
+(test "evalo-run-appendo-2"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((appendo (lambda (l s out)
+                           (conde
+                             ((== '() l) (== s out))
+                             ((fresh (a d res)
+                                (== (cons a d) l)
+                                (== (cons a res) out)
+                                (appendo d s res)))))))
+         (run ',(peano 3) (x)
+           (fresh (v w)
+             (== (list v w) x)
+             (appendo v w '(a b)))))
+      q)))
+  '(((() (a b))
+     ((a) (b))
+     ((a b) ()))))
+
+

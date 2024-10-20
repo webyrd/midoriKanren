@@ -188,16 +188,16 @@
 
     ;;
     ((fresh (x x* ge ge*)
-       (== `(run* (,x . ,x*) ,ge . ,ge*) expr)
+       (== `(run* (,x) ,ge . ,ge*) expr)
        (not-in-envo 'run* env)
        (symbolo x)
-       (eval-expo `(map reify-1st (take-all (call/goal (fresh (,x . ,x*) ,ge . ,ge*)))) env val)))
+       (eval-expo `(map reify-1st (take-all (call/goal (fresh (,x) ,ge . ,ge*)))) env val)))
     ;;
     ((fresh (pne x x* ge ge*)
-       (== `(run ,pne (,x . ,x*) ,ge . ,ge*) expr)
+       (== `(run ,pne (,x) ,ge . ,ge*) expr)
        (not-in-envo 'run env)
        (symbolo x)
-       (eval-expo `(map reify-1st (take ,pne (call/goal (fresh (,x . ,x*) ,ge . ,ge*)))) env val)))
+       (eval-expo `(map reify-1st (take ,pne (call/goal (fresh (,x) ,ge . ,ge*)))) env val)))
     
     ((symbolo expr) (lookupo expr env val))
 
