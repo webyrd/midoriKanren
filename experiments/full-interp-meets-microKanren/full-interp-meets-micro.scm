@@ -198,6 +198,13 @@
        (not-in-envo 'run env)
        (symbolo x)
        (eval-expo `(map reify-1st (take ,pne (call/goal (fresh (,x) ,ge . ,ge*)))) env val)))
+
+    ;;
+    ((fresh (x ge ge*)
+       (== `(project (,x) ,ge . ,ge*) expr)
+       (not-in-envo 'project env)
+       (symbolo x)
+       (eval-expo `(lambda (s/c) (let ((,x (walk* ,x (car s/c)))) ((conj+ ,ge . ,ge*) s/c))) env val)))
     
     ((symbolo expr) (lookupo expr env val))
 

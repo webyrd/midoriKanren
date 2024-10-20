@@ -101,7 +101,7 @@
 
 (test "procedure?-0c"
   (let ((procs
-         (run 60 (q)
+         (run 70 (q)
            (evalo
             `(procedure? ,q)
             #t))))
@@ -795,11 +795,6 @@
   '(()))
 
 
-
-
-
-
-
 (test "evalo-reify-name-1"
   (time
    (run* (q)
@@ -875,6 +870,44 @@
               ((== x 'dog)))))))
       q)))
   '((cat dog)))
+
+
+(test "evalo-run*/project-1"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (== y '(cat))
+           (== (car y) x)))
+      q)))
+  '((lvar . ())))
+
+(test "evalo-run*/project-2"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (== y '(cat))
+           (project (y)
+             (== (car y) x))))
+      q)))
+  '((cat)))
+
+
+(test "evalo-run*/let/==-1"
+  ;; adapted from frame 60 on page 15 of TRS1
+  (time
+   (run* (q)
+     (evalo
+      `(run* (q)
+         (let ((a (== 'cat q)))
+           (let ((b (== 'dog q)))
+             b)))
+      q)))
+  '((dog)))
+
 
 (test "evalo-run*-1"
   (time
@@ -1044,4 +1077,136 @@
      ((a) (b))
      ((a b) ()))))
 
+(test "evalo-append-1"
+  (time
+    (run* (q)
+      (evalo
+       `(letrec ((append
+                  (lambda (l s)
+                    (if (null? l)
+                        s
+                        (cons (car l) (append (cdr l) s))))))
+          (append '(a) '(b)))
+       q)))
+  '((a b)))
 
+
+(test "evalo-append-appendo-1"
+  (time
+    (run* (q)
+      (evalo
+       `(run* (z)
+          (letrec ((append
+                    (lambda (l s)
+                      (if (null? l)
+                          s
+                          (cons (car l) (append (cdr l) s))))))
+            (letrec ((appendo
+                      (lambda (l1 l2 l)
+                        (conde
+                          ((== '() l1) (== l2 l))
+                          ((fresh (a d l3)
+                             (== (cons a d) l1)
+                             (== (cons a l3) l)
+                             (appendo d l2 l3)))))))
+              (== (append '(a) '(b)) z))))
+       q)))
+  '(((a b))))
+
+(test "evalo-append-appendo-2"
+  (time
+    (run* (q)
+      (evalo
+       `(run* (z)
+          (letrec ((append
+                    (lambda (l s)
+                      (if (null? l)
+                          s
+                          (cons (car l) (append (cdr l) s))))))
+            (letrec ((appendo
+                      (lambda (l1 l2 l)
+                        (conde
+                          ((== '() l1) (== l2 l))
+                          ((fresh (a d l3)
+                             (== (cons a d) l1)
+                             (== (cons a l3) l)
+                             (appendo d l2 l3)))))))
+              (fresh (y)
+                (appendo '(a) '(b) y)
+                (== y z)))))
+       q)))
+  '(((a b))))
+
+(test "evalo-append-appendo-2b"
+  (time
+    (run* (q)
+      (evalo
+       `(run* (z)
+          (letrec ((append
+                    (lambda (l s)
+                      (if (null? l)
+                          s
+                          (cons (car l) (append (cdr l) s))))))
+            (letrec ((appendo
+                      (lambda (l1 l2 l)
+                        (conde
+                          ((== '() l1) (== l2 l))
+                          ((fresh (a d l3)
+                             (== (cons a d) l1)
+                             (== (cons a l3) l)
+                             (appendo d l2 l3)))))))
+              (fresh (y)
+                (== y z)
+                (appendo '(a) '(b) y)))))
+       q)))
+  '(((a b))))
+
+(test "evalo-append-appendo-3"
+  (time
+    (run* (q)
+      (evalo
+       `(run* (z)
+          (letrec ((append
+                    (lambda (l s)
+                      (if (null? l)
+                          s
+                          (cons (car l) (append (cdr l) s))))))
+            (letrec ((appendo
+                      (lambda (l1 l2 l)
+                        (conde
+                          ((== '() l1) (== l2 l))
+                          ((fresh (a d l3)
+                             (== (cons a d) l1)
+                             (== (cons a l3) l)
+                             (appendo d l2 l3)))))))
+              (fresh (y)
+                (appendo '(a) '(b) y)
+                (== (append '(a b) '(c d)) z)))))
+       q)))
+  '(((a b c d))))
+
+
+(test "evalo-append-appendo-n"
+  (time
+    (run* (q)
+      (evalo
+       `(run* (z)
+          (letrec ((append
+                    (lambda (l s)
+                      (if (null? l)
+                          s
+                          (cons (car l) (append (cdr l) s))))))
+            (letrec ((appendo
+                      (lambda (l1 l2 l)
+                        (conde
+                          ((== '() l1) (== l2 l))
+                          ((fresh (a d l3)
+                             (== (cons a d) l1)
+                             (== (cons a l3) l)
+                             (appendo d l2 l3)))))))
+              (fresh (y)
+                (appendo '(a) '(b) y)
+                (project (y)
+                  (== (append y '(c d)) z))))))
+       q)))
+  '(((a b c d))))
