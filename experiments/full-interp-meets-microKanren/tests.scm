@@ -872,6 +872,32 @@
   '((cat dog)))
 
 
+(test "evalo-multiple-run*-1"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((l1
+              (run* (x)
+                (conde
+                  ((== 'cat x))
+                  ((== 'dog x))))))
+         (list l1 (run* (w) (== 'mouse w)) l1))
+      q)))
+  '(((cat dog) (mouse) (cat dog))))
+
+(test "evalo-multiple-run*-2"
+  (time
+   (run* (q)
+     (evalo
+      `(list (run* (x)
+               (conde
+                 ((== 'cat x))
+                 ((== 'dog x))))
+             (run* (w) (== 'mouse w)))
+      q)))
+  '(((cat dog) (mouse))))
+
+
 (test "evalo-run*/project-1"
   (time
    (run* (q)
