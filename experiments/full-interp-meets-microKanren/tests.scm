@@ -897,6 +897,46 @@
       q)))
   '(((cat dog) (mouse))))
 
+(test "evalo-multiple-run*-3"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((f (lambda (x v) (== v x))))
+         (list (run* (y) (f y 'cat))
+               (run* (z) (f z 'dog))))
+      q)))
+  '(((cat) (dog))))
+
+(test "evalo-multiple-run*-4"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((f (lambda (x v) (== v x))))
+         (letrec ((append
+                   (lambda (l s)
+                     (if (null? l)
+                         s
+                         (cons (car l) (append (cdr l) s))))))
+           (append (run* (y) (f y 'cat))
+                   (run* (z) (f z 'dog)))))
+      q)))
+  '((cat dog)))
+
+(test "evalo-multiple-run*-5"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((f (lambda (x v) (== v x))))
+         (letrec ((append
+                   (lambda (l s)
+                     (if (null? l)
+                         s
+                         (cons (car l) (append (cdr l) s))))))
+           (append (run* (y) (f y 'cat))
+                   (run* (y) (f y 'dog)))))
+      q)))
+  '((cat dog)))
+
 
 (test "evalo-run*/project-1"
   (time
