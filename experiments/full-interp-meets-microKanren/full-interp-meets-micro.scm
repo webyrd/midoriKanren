@@ -4,7 +4,8 @@
 ;; (https://github.com/michaelballantyne/faster-minikanren/blob/master/full-interp.scm)
 ;; from `faster-miniKanren`
 ;; (https://github.com/michaelballantyne/faster-minikanren/), add
-;; microKanren/miniKanren.
+;; microKanren/miniKanren
+;; (https://github.com/jasonhemann/microKanren).
 
 ;; The resulting interpreter is *very* slow when evaluating miniKanren
 ;; code (one test is ~100,000x slower, compared to running equivalent
