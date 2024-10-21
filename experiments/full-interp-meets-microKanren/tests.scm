@@ -11,6 +11,63 @@
      x))
   '(4))
 
+(test "simple foldl test"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((foldl (lambda (proc ls start)
+                         (if (null? ls)
+                             start
+                             (foldl proc
+                                    (cdr ls)
+                                    (proc (car ls) start))))))
+         (foldl cons '(1 2) '()))
+      q)))
+  '((2 1)))
+
+(test "simple foldlo test"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((foldlo (lambda (rel ls start end)
+                         (conde
+                           ((== '() ls) (== start end))
+                           ((fresh (a d res)
+                              (== (cons a d) ls)
+                              (rel a start res)
+                              (foldlo rel d res end)))))))
+         (let ((conso (lambda (a d pr) (== (cons a d) pr))))
+           (run* (z) (foldlo conso '(1 2) '() z))))
+      q)))
+  '(((2 1))))
+
+(test "simple foldl/foldoo test"
+  (time
+   (run* (q)
+     (evalo
+      `(letrec ((foldl (lambda (proc ls start)
+                         (if (null? ls)
+                             start
+                             (foldl proc
+                                    (cdr ls)
+                                    (proc (car ls) start))))))
+         (letrec ((foldlo (lambda (rel ls start end)
+                            (conde
+                              ((== '() ls) (== start end))
+                              ((fresh (a d res)
+                                 (== (cons a d) ls)
+                                 (rel a start res)
+                                 (foldlo rel d res end)))))))
+           (let ((conso (lambda (a d pr) (== (cons a d) pr))))
+             (let ((v1 (foldl cons '(1 2) '())))
+               (let ((v2 (run* (z) (foldlo conso '(1 2) '() z))))
+                 (list
+                   v1
+                   v2
+                   (equal? (car v2) v1)))))))
+      q)))
+  '(((2 1))))
+
 
 (test "pair?-0a"
   (run* (q)
