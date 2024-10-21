@@ -1245,6 +1245,43 @@
   '((cat)))
 
 
+
+#|
+Examples from the first edition of The Reasoned Schemer, showing
+mixing and matching of Scheme and miniKanren code.
+|#
+
+(test "trs1-1a"
+  ;; from frame 60 on page 15 of TRS1
+  (run* (q)
+    (let ((a (== #t q))
+          (b (== #f q)))
+      b))
+  '(#f))
+
+(test "trs1-1c"
+  ;; adapted from frame 60 on page 15 of TRS1
+  (run* (x)
+    (evalo
+     `(run* (q)
+        (let ((a (== #t q)))
+          (let ((b (== #f q)))
+            b)))
+     x))
+  '((#f)))
+
+(test "trs1-1d"
+  ;; adapted from frame 60 on page 15 of TRS1
+  (run* (x)
+    (evalo
+     `(run* (q)
+        (let ((b (== #f q)))
+          b))
+     x))
+  '((#f)))
+
+
+
 (test "evalo-run*/let/==-1"
   ;; adapted from frame 60 on page 15 of TRS1
   (time
