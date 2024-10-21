@@ -1559,3 +1559,97 @@
                   (== (append y '(c d)) z))))))
        q)))
   '(((a b c d))))
+
+(test "12-from-midoriKanren-a"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (z)
+         (letrec ((append (lambda (l s)
+                            (if (null? l)
+                                s
+                                (cons (car l) (append (cdr l) s))))))
+           (letrec ((appendo (lambda (l1 l2 l)
+                               (conde
+                                 ((== '() l1) (== l2 l))
+                                 ((fresh (a d l3)
+                                    (== (cons a d) l1)
+                                    (== (cons a l3) l)
+                                    (appendo d l2 l3)))))))
+             (fresh ()
+               (appendo '(a) '(b) '(a b))
+               (== (append '(a) '(b)) z)))))
+      q)))
+  '(((a b))))
+
+(test "12-from-midoriKanren-b"
+  (time
+   (run* (q)
+     (evalo
+      `(run ',(peano 1) (z)
+         (letrec ((append (lambda (l s)
+                            (if (null? l)
+                                s
+                                (cons (car l) (append (cdr l) s))))))
+           (letrec ((appendo (lambda (l1 l2 l)
+                               (conde
+                                 ((== '() l1) (== l2 l))
+                                 ((fresh (a d l3)
+                                    (== (cons a d) l1)
+                                    (== (cons a l3) l)
+                                    (appendo d l2 l3)))))))
+             (fresh ()
+               (appendo '(a) '(b) '(a b))
+               (== (append '(a) '(b)) z)))))
+      q)))
+  '(((a b))))
+
+#|
+;; WEB too slow or diverges
+(test "12-from-midoriKanren-c"
+  (time
+   (run* (x y)
+     (evalo
+      `(run ',(peano 1) (z)
+         (letrec ((append (lambda (l s)
+                            (if (null? l)
+                                s
+                                (cons (car l) (append (cdr l) s))))))
+           (letrec ((appendo (lambda (l1 l2 l)
+                               (conde
+                                 ((== '() l1) (== l2 l))
+                                 ((fresh (a d l3)
+                                    (== (cons a d) l1)
+                                    (== (cons a l3) l)
+                                    (appendo d l2 l3)))))))
+             (fresh ()
+               (appendo '(a) '(b) '(a b))
+               (== (append ',x '(d)) z)))))
+      '((c d)))))
+  '???)
+|#
+
+#|
+;;; WEB too slow or diverges
+(test "12-from-midoriKanren"
+  (time
+   (run* (x y)
+     (evalo
+      `(run ',(peano 1) (z)
+         (letrec ((append (lambda (l s)
+                            (if (null? l)
+                                s
+                                (cons (car l) (append (cdr l) s))))))
+           (letrec ((appendo (lambda (l1 l2 l)
+                               (conde
+                                 ((== '() l1) (== l2 l))
+                                 ((fresh (a d l3)
+                                    (== (cons a d) l1)
+                                    (== (cons a l3) l)
+                                    (appendo d l2 l3)))))))
+             (fresh ()
+               (appendo ',x ',y '(a b c d e))
+               (== (append ',x '(c d)) z)))))
+      '((a b c d)))))
+  '(((a b) (c d e))))
+|#
