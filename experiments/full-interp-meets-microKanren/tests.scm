@@ -166,6 +166,16 @@
      q))
   '(#t))
 
+(test "procedure?-9"
+  (run* (q)
+    (evalo `(procedure? (walk* car '())) q))
+  '(#t))
+
+(test "procedure?-10"
+  (run* (q)
+    (evalo `(procedure? (walk* (lambda (x) (cons x x)) '())) q))
+  '(#t))
+
 
 (test "let-1"
   (run* (q)
@@ -936,6 +946,279 @@
                    (run* (y) (f y 'dog)))))
       q)))
   '((cat dog)))
+
+
+(test "evalo-unify-with-prim-1"
+  (time
+   (run* (q)
+     (evalo
+      `(unify car (var ',(peano 0)) '())
+      q)))
+  '((((lvar . ()) . (prim . car)))))
+
+(test "evalo-unify-with-prim-2"
+  (time
+   (run* (q)
+     (evalo
+      `(cdr (car (unify car (var ',(peano 0)) '())))
+      q)))
+  '((prim . car)))
+
+(test "evalo-unify-with-prim-3"
+  (time
+   (run* (q)
+     (evalo
+      `(procedure? (cdr (car (unify car (var ',(peano 0)) '()))))
+      q)))
+  '(#t))
+
+(test "evalo-unify-with-prim-3"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((x (var ',(peano 0))))
+         (unify car x '()))
+      q)))
+  '((((lvar . ()) . (prim . car)))))
+
+(test "evalo-unify-with-prim-4"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((x (var ',(peano 0))))
+         (walk x (unify car x '())))
+      q)))
+  '((prim . car)))
+
+(test "evalo-unify-with-prim-5"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((x (var ',(peano 0))))
+         (walk* x (unify car x '())))
+      q)))
+  '((prim . car)))
+
+(test "evalo-unify-with-prim-6"
+  (time
+   (run* (q)
+     (evalo
+      `((call/fresh
+         (lambda (x)
+           (== car x)))
+        empty-state)
+      q)))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+(test "evalo-unify-with-prim-7b"
+  (time
+   (run* (q)
+     (evalo
+      `(procedure?
+        (call/goal
+         (fresh (x)
+           (== car x))))
+      q)))
+  '(#t))
+
+(test "evalo-unify-with-prim-7c"
+  (time
+   (run* (q)
+     (evalo
+      `((call/goal
+         (fresh (x)
+           (== car x))))
+      q)))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+(test "evalo-unify-with-prim-7d"
+  (time
+   (run* (q)
+     (evalo
+      `(procedure?
+        ((call/goal
+          (fresh (x)
+            (== car x)))))
+      q)))
+  '(#f))
+
+(test "evalo-unify-with-prim-8"
+  (run* (q)
+    (evalo
+     `(pull
+       (call/goal
+        (fresh (x)
+          (== car x))))
+     q))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+(test "evalo-unify-with-prim-9"
+  (run* (q)
+    (evalo
+     `(pull
+       ((call/fresh
+         (lambda (x)
+           (== car x)))
+        empty-state))
+     q))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+(test "evalo-unify-with-prim-10"
+  (run* (q)
+    (evalo
+     `(take-all
+       ((call/fresh
+         (lambda (x)
+           (== car x)))
+        empty-state))
+     q))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+(test "evalo-unify-with-prim-12"
+  (time
+   (run* (q)
+     (evalo
+      `(take-all
+        (call/goal
+         (fresh (x)
+           (== car x))))
+      q)))
+  '((((((lvar . ()) . (prim . car))) . (())))))
+
+
+(test "evalo-unify-with-lambda-1"
+  (time
+   (caar
+    (run* (q)
+      (evalo
+       `(cdr (car (unify (lambda (w) (cons w w)) (var ',(peano 0)) '())))
+       q))))
+  'closure)
+
+(test "evalo-unify-with-lambda-2"
+  (time
+   (run* (q)
+      (evalo
+       `(procedure? (cdr (car (unify (lambda (w) (cons w w)) (var ',(peano 0)) '()))))
+       q)))
+  '(#t))
+
+
+(test "evalo-run*-and-application-000"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (== car y)))
+      q)))
+  '(((__ ()))))
+
+(test "evalo-run*-and-application-0000"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (== (lambda (y) (cons x y)) y)))
+      q)))
+  '(((__ ()))))
+
+(test "evalo-run*-and-application-0"
+  (time
+   (run* (q)
+     (evalo
+      `(procedure? (car (run* (x) (== car x))))
+      q)))
+  '(#t))
+
+(test "evalo-run*-and-application-00"
+  (time
+   (run* (q)
+     (evalo
+      `(procedure? (car (run* (x) (== (lambda (z) (cons z z)) x))))
+      q)))
+  '(#t))
+
+(test "evalo-run*-and-application-1"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x) (== car x))
+      q)))
+  '(((prim . car))))
+
+(test "evalo-run*-and-application-1b"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x) (== x car))
+      q)))
+  '(((prim . car))))
+
+(test "evalo-run*-and-application-3"
+  (time
+   (run* (q)
+     (evalo
+      `((car (run* (x) (== car x))) '(a b c))
+      q)))
+  '(a))
+
+(test "evalo-run*-and-application-3b"
+  (time
+   (run* (q)
+     (evalo
+      `((car (run* (x) (== x car))) '(a b c))
+      q)))
+  '(a))
+
+(test "evalo-run*-and-application-3c"
+  (time
+   (run* (q)
+     (evalo
+      `(map
+        (car (run* (x) (== x cdr)))
+        '((1 2) (3 4 5) (6)))
+      q)))
+  '(((2) (4 5) ())))
+
+
+(test "evalo-run*-and-application-4"
+  (time
+   (run* (q)
+     (evalo
+      `(map
+        (car (run* (x) (== x (lambda (x) (cons x x)))))
+        '((1 2) (3 4 5) (6)))
+      q)))
+  '((((1 2) . (1 2)) ((3 4 5) . (3 4 5)) ((6) . (6)))))
+
+
+(test "evalo-run*-and-application-n"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((l '((a b) (c d))))
+         (let ((procs (run* (x)
+                        (conde
+                          ((== car x))
+                          ((== cdr x))))))
+           (map (lambda (proc) (proc l)) procs)))
+      q)))
+  '(((a b) ((c d)))))
+
+(test "evalo-run*-and-application-n2"
+  (time
+   (run* (q)
+     (evalo
+      `(let ((l '((a b) (c d))))
+         (let ((procs (run* (x)
+                        (conde
+                          ((== car x))
+                          ((== cdr x))))))
+           (map (lambda (proc) (map proc l)) procs)))
+      q)))
+  '(((a c) ((b) (d)))))
 
 
 (test "evalo-run*/project-1"

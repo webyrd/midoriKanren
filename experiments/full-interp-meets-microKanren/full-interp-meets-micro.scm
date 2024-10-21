@@ -170,8 +170,8 @@
        (not-in-envo 'fresh env)
        (symbolo x0)
        (eval-expo `(call/fresh
-                (lambda (,x0)
-                  (fresh ,x* ,ge . ,ge*)))
+                    (lambda (,x0)
+                      (fresh ,x* ,ge . ,ge*)))
               env
               val)))
 
@@ -323,37 +323,6 @@
        (symbolo x)
        (ext-env*o dx* da* env2 out)))))
 
-#;(defrel (handle-mpluso stream1 stream2 env val)
-  (conde
-    ((== '() stream1) (== stream2 val))
-    ((fresh (a d)
-       (== `(,a . ,d) stream1)
-       (conde
-         ((fresh (env^)
-            ;; WEB is there a nicer approach than creating a closure?
-            (== `(closure (lambda () (mplus $2 ($1))) ,env^) val)
-            (procedure-tago a)
-            (ext-env*o '($1 $2) `(,stream1 ,stream2) env env^)))
-         ((fresh (res)
-            (absent-tago a)
-            (== `(,a . ,res) val)
-            (handle-mpluso d stream2 env res))))))))
-
-#;(defrel (handle-bindo stream goal env val)
-  (conde
-    ((== '() stream) (== '() val))
-    ((fresh (a d env^)
-       (== `(,a . ,d) stream)
-       (ext-env*o '($ g) `(,stream ,goal) env env^)
-       (conde
-         ((fresh ()
-            ;; WEB is there a nicer approach than creating a closure?
-            (== `(closure (lambda () (bind ($) g)) ,env^) val)
-            (procedure-tago a)))
-         ((absent-tago a)
-          ;; WEB is there a nicer approach than calling `eval-expo`?
-          (eval-expo `(mplus (g (car $)) (bind (cdr $) g)) env^ val)))))))
-
 (defrel (eval-primo prim-id a* env val)
   (conde
     ;;
@@ -381,17 +350,8 @@
        (conde
          ((== c1 c2) (== #t val))
          ((=/= c1 c2) (== #f val))))]
-    
-    #;[(== prim-id 'mplus)
-     (fresh ($1 $2)
-       (== `(,$1 ,$2) a*)
-       (handle-mpluso $1 $2 env val))]
-
-    #;[(== prim-id 'bind)
-     (fresh ($ g)
-       (== `(,$ ,g) a*)
-       (handle-bindo $ g env val))]
     ;;
+    
     [(== prim-id 'cons)
      (fresh (a d)
        (== `(,a ,d) a*)
@@ -450,7 +410,7 @@
          ((symbolo v) (== #f val))
          ((fresh (a d)
             (== `(,a . ,d) v) (== #f val)
-            (absent-tago a)))))]
+            (not-tago a)))))]
     [(== prim-id 'pair?)
      (fresh (v)
        (== `(,v) a*)
@@ -458,7 +418,7 @@
          ((fresh (a d)
             (== `(,a . ,d) v)
             (== #t val)
-            (absent-tago a)))
+            (not-tago a)))
          ((== #f v) (== #f val))
          ((== #t v) (== #f val))
          ((== '() v) (== #f val))
@@ -549,8 +509,6 @@
                       (var . (val . (prim . var)))
                       (var? . (val . (prim . var?)))
                       (var=? . (val . (prim . var=?)))
-                      ;(mplus . (val . (prim . mplus)))
-                      ;(bind . (val . (prim . bind)))
                       ;;
                       . ,empty-env))
 
