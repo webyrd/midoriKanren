@@ -1,5 +1,17 @@
 (load "load.scm")
 
+(test "test from the readme"
+  (run* (x)
+    (evalo
+     `(let ((l (list ==)))
+        (let ((ans (run* (q) ((car l) q 4))))
+          (if (null? ans)
+              'doh
+	      (car ans))))
+     x))
+  '(4))
+
+
 (test "pair?-0a"
   (run* (q)
     (evalo
