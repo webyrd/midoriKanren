@@ -164,3 +164,23 @@
               (== (append ',x '(c d)) z))))
        '((a b c d)))))
   '(((a b) (c d e))))
+
+(test "13"
+  (time
+   (run 1 (v w x y)
+     (eval-programo
+      `(run* (z)
+         (letrec-func ((append (l s)
+                         (if (null? l)
+                             s
+                             (cons (car ,v) (append (cdr l) s)))))
+           (letrec-rel ((appendo (l1 l2 l)
+                          (conde
+                            ((== '() l1) (== l2 l))
+                            ((fresh (a d l3)
+                               (== (,w a d) l1)
+                               (== (cons a l3) l)
+                               (appendo d l2 l3))))))
+             (,x (append '(cat) '(dog)) (,y '(fish) '(rat)) z))))
+      '((cat dog fish rat)))))
+  '((l cons appendo append)))
