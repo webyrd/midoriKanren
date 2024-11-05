@@ -416,19 +416,22 @@
      q))
   '(((lvar . ((()))) . (lvar . (((())))))))
 
-#|
 (test "evalo-walk*-pair-1"
   (run* (q)
     (evalo
-     `(walk*
-       '(lvar ())
-       '(((lvar . (((())))) . 4)
-         ((lvar . ((()))) . 3)
-         ((lvar . (())) . ((lvar . ((()))) . (lvar . (((()))))))
-         ((lvar . ()) . (lvar . (())))))
+     `(let ((lv0 (var ',(peano 0))))
+        (let ((lv1 (var ',(peano 1))))
+          (let ((lv2 (var ',(peano 2))))
+            (let ((lv3 (var ',(peano 3))))
+              (walk*
+               lv0
+               (list
+                 (cons lv3 4)
+                 (cons lv2 3)
+                 (cons lv1 (cons lv2 lv3))
+                 (cons lv0 lv1)))))))
      q))
   '((3 . 4)))
-|#
 
 (test "evalo-lambda/cons-1"
   (run* (q)
