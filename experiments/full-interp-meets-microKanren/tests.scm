@@ -356,49 +356,48 @@
      q))
   '((lvar)))
 
-#|
 (test "var-2"
   (run* (q)
     (evalo
-     '(var '())
+     `(var ',(peano 0))
      q))
   '((lvar)))
 
 (test "var?-2"
   (run* (q)
     (evalo
-     '(var? (var '()))
+     `(var? (var ',(peano 0)))
      q))
   '(#t))
 
 (test "var?-3"
   (run* (q)
     (evalo
-     '(var? (var '()))
+     `(var? (var ',(peano 0)))
      q))
   '(#t))
 
 (test "var=?-1"
   (run* (q)
     (evalo
-     '(var=? (var '()) (var '()))
+     `(var=? (var ',(peano 0)) (var ',(peano 0)))
      q))
   '(#t))
 
 (test "var=?-2"
   (run* (q)
     (evalo
-     '(var=? (var '(())) (var '()))
+     `(var=? (var ',(peano 1)) (var ',(peano 0)))
      q))
   '(#f))
 
 (test "var=?-3"
   (run* (q)
     (evalo
-     '(var=? (var '(())) (var '(())))
+     `(var=? (var ',(peano 1)) (var ',(peano 1)))
      q))
   '(#t))
-|#
+
 
 #|
 (test "evalo-walk-pair-1"
