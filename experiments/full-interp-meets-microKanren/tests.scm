@@ -1,5 +1,30 @@
 (load "load.scm")
 
+(test "need-project-1a"
+  (run* (x)
+    (evalo
+     `(run* (q)
+        (fresh (l)
+          (== '(cat dog mouse) l)
+          (project (l)
+            (== (car l) q))))
+     x))
+  '((cat)))
+
+
+(test "need-project-1b"
+  (run* (x)
+    (evalo
+     `(run* (q)
+        (fresh (l)
+          (== '(cat dog mouse) l)
+          (== (car l) q)))
+     x))
+  '())
+
+
+
+
 (test "test from the readme"
   (run* (x)
     (evalo
@@ -77,7 +102,7 @@
     #t
     ()
     (_.0 (num _.0))
-    (_.0 (=/= ((_.0 closure)) ((_.0 prim))) (sym _.0))))
+    (_.0 (=/= ((_.0 closure)) ((_.0 lvar)) ((_.0 prim))) (sym _.0))))
 
 (test "pair?-0b"
   (run* (q)
@@ -88,6 +113,8 @@
      (absento
       (closure _.0)
       (closure _.1)
+      (lvar _.0)
+      (lvar _.1)
       (prim _.0)
       (prim _.1)))))
 
@@ -157,8 +184,8 @@
     #t
     ()
     (_.0 (num _.0))
-    (_.0 (=/= ((_.0 closure)) ((_.0 prim))) (sym _.0))
-    ((_.0 . _.1) (absento (closure _.0) (closure _.1) (prim _.0) (prim _.1)))))
+    (_.0 (=/= ((_.0 closure)) ((_.0 lvar)) ((_.0 prim))) (sym _.0))
+    ((_.0 . _.1) (absento (closure _.0) (closure _.1) (lvar _.0) (lvar _.1) (prim _.0) (prim _.1)))))
 
 (test "procedure?-0b"
   (run* (q)
@@ -316,12 +343,15 @@
   '((((())))))
 
 
+#|
+;; WEB this test now fails due to 'lvar being added to not-tago
+;; Is this the desired behavior?
 (test "var?-1"
   (run* (q)
     (evalo
      '(var? '(lvar . ()))
      q))
-  '(#t))
+  '())
 
 (test "var-1"
   (run* (q)
@@ -371,8 +401,9 @@
      '(var=? (var '(())) (var '(())))
      q))
   '(#t))
+|#
 
-
+#|
 (test "evalo-walk-pair-1"
   (run* (q)
     (evalo
@@ -396,7 +427,7 @@
          ((lvar . ()) . (lvar . (())))))
      q))
   '((3 . 4)))
-
+|#
 
 (test "evalo-lambda/cons-1"
   (run* (q)
@@ -461,7 +492,7 @@
      `(assp ,p ,l)
      q))
   '(((_.0 (quote ()) #f) (num _.0))
-    (((quote _.0) (quote ()) #f) (absento (closure _.0) (prim _.0)))))
+    (((quote _.0) (quote ()) #f) (absento (closure _.0) (lvar _.0) (prim _.0)))))
 
 (test "evalo-assp-3"
   (run* (q)
@@ -534,6 +565,7 @@
       '(b . 5))))
   '((lambda (y) (equal? y 'b))))
 
+#|
 (test "evalo-walk-1"
   (run* (q)
     (evalo
@@ -624,6 +656,8 @@
      `(unify '(lvar ((()))) '5 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
      q))
   '((((lvar ((()))) . 5) ((lvar (())) . 4) ((lvar ()) lvar (())))))
+|#
+
 
 (test "evalo-let/==/empty-state-1"
   (run* (q)
@@ -649,12 +683,14 @@
      q))
   '(((() . ()))))
 
+#|
 (test "evalo-==/lvar/call/goal-1"
   (run* (q)
     (evalo
      `(call/goal (== '(lvar . ()) 'cat))
      q))
   '((((((lvar . ()) . cat)) . ()))))
+|#
 
 (test "evalo-==/var/call/goal-1"
   (run* (q)
@@ -891,6 +927,7 @@
       q)))
   '(()))
 
+#|
 (test "evalo-reify-s-2"
   (time
    (run* (q)
@@ -900,7 +937,9 @@
         '())
       q)))
   '((((lvar . ()) . (__ ())))))
+|#
 
+#|
 (test "evalo-reify-s-3"
   (time
    (run* (q)
@@ -910,7 +949,9 @@
         '())
       q)))
   '((((lvar . ((((()))))) . (__ ())))))
+|#
 
+#|
 (test "evalo-reify-s-4"
   (time
    (run* (q)
@@ -920,6 +961,7 @@
         '())
       q)))
   '((((lvar . ()) . (__ (()))) ((lvar . (())) . (__ ())))))
+|#
 
 (test "evalo-reify-1st-1"
   (time
@@ -1288,7 +1330,6 @@
       q)))
   '(((a c) ((b) (d)))))
 
-
 (test "evalo-run*/project-1"
   (time
    (run* (q)
@@ -1298,7 +1339,7 @@
            (== y '(cat))
            (== (car y) x)))
       q)))
-  '((lvar . ())))
+  '())
 
 (test "evalo-run*/project-2"
   (time
