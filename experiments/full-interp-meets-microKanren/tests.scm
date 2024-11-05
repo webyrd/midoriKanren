@@ -342,24 +342,21 @@
      q))
   '((((())))))
 
-
-#|
-;; WEB this test now fails due to 'lvar being added to not-tago
-;; Is this the desired behavior?
 (test "var?-1"
   (run* (q)
     (evalo
-     '(var? '(lvar . ()))
+     '(var? (var ',(peano 0)))
      q))
-  '())
+  '(#t))
 
 (test "var-1"
   (run* (q)
     (evalo
-     '(var ())
+     '(var '())
      q))
-  '())
+  '((lvar)))
 
+#|
 (test "var-2"
   (run* (q)
     (evalo
