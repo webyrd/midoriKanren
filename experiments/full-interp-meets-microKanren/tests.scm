@@ -941,17 +941,15 @@
       q)))
   '((((lvar . ()) . (__ ())))))
 
-#|
 (test "evalo-reify-s-3"
   (time
    (run* (q)
      (evalo
       `(reify-s
-        '(lvar . ((((())))))
+        (var ',(peano 4))
         '())
       q)))
   '((((lvar . ((((()))))) . (__ ())))))
-|#
 
 #|
 (test "evalo-reify-s-4"
