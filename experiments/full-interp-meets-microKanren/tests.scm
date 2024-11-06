@@ -569,98 +569,153 @@
       '(b . 5))))
   '((lambda (y) (equal? y 'b))))
 
-#|
 (test "evalo-walk-1"
   (run* (q)
     (evalo
-     `(walk '(lvar ()) '(((lvar (())) . 4) ((lvar ()) . 5)))
+     `(walk
+        (var ',(peano 1))
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) 5)))
      q))
   '(5))
 
 (test "evalo-walk-2"
   (run* (q)
     (evalo
-     `(walk '(lvar ((()))) '(((lvar (())) . 4) ((lvar ()) . 5)))
+     `(walk
+        (var ',(peano 3))
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) 5)))
      q))
   '((lvar ((())))))
 
 (test "evalo-walk-3"
   (run* (q)
     (evalo
-     `(walk 'cat '(((lvar (())) . 4) ((lvar ()) . 5)))
+     `(walk
+        'cat
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) 5)))
      q))
   '(cat))
 
 (test "evalo-walk-4"
   (run* (q)
     (evalo
-     `(walk '(lvar ()) '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(walk
+        (var ',(peano 1))
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '(4))
 
 (test "evalo-unify-1"
   (run* (q)
     (evalo
-     `(unify '4 '4 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        '4
+        '4
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '((((lvar (())) . 4) ((lvar ()) . (lvar (()))))))
 
 (test "evalo-unify-2"
   (run* (q)
     (evalo
-     `(unify '4 '5 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        '4
+        '5
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '(#f))
 
 (test "evalo-unify-3"
   (run* (q)
     (evalo
-     `(unify '(lvar (())) '4 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        (var ',(peano 2))
+        '4
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '((((lvar (())) . 4) ((lvar ()) . (lvar (()))))))
 
 (test "evalo-unify-4"
   (run* (q)
     (evalo
-     `(unify '(lvar (())) '5 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        (var ',(peano 2))
+        '5
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '(#f))
 
 (test "evalo-unify-5"
   (run* (q)
     (evalo
-     `(unify '(lvar ()) '5 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        (var ',(peano 1))
+        '5
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '(#f))
 
 (test "evalo-unify-6"
   (run* (q)
     (evalo
-     `(unify '(lvar ()) '4 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        (var ',(peano 1))
+        '4
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '((((lvar (())) . 4) ((lvar ()) lvar (())))))
 
 (test "evalo-unify-7"
   (run* (q)
     (evalo
-     `(unify '(lvar ()) '5 '())
+     `(unify
+        (var ',(peano 1))
+        '5
+        '())
      q))
   '((((lvar ()) . 5))))
 
 (test "evalo-unify-8"
   (run* (q)
     (evalo
-     `(unify '5 '(lvar ()) '())
+     `(unify
+        '5
+        (var ',(peano 1))
+        '())
      q))
   '((((lvar ()) . 5))))
 
 (test "evalo-unify-9"
   (run* (q)
     (evalo
-     `(unify '(lvar ((()))) '5 '(((lvar (())) . 4) ((lvar ()) . (lvar (())))))
+     `(unify
+        (var ',(peano 3))
+        '5
+        (list
+          (cons (var ',(peano 2)) 4)
+          (cons (var ',(peano 1)) (var ',(peano 2)))))
      q))
   '((((lvar ((()))) . 5) ((lvar (())) . 4) ((lvar ()) lvar (())))))
-|#
 
 
 (test "evalo-let/==/empty-state-1"
