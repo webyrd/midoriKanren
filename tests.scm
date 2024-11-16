@@ -243,6 +243,21 @@
          (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((())))))))))
   '(a))
 
+
+(test "copy-termo-synthesize-template-2"
+  ;; 7.5 seconds on Will's 2020 MBP
+  (time
+   (run 2 (x)
+     (eval-programo
+      `(run* (z)
+         (fresh (t1 t2 a)
+           (== (cons t1 (cons t2 '())) z)
+           (== (cons a ,x) t1)
+           (copy-termo t1 t2)))
+      '((((_.) _.) ((_. ()) _. ()))))))
+  '(a
+    ((if _.0 a _.1) (num _.0))))
+
 (test "1"
   (run* (x)
     (eval-programo
