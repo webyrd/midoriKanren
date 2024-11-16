@@ -231,15 +231,16 @@
       ))))
 
 (test "copy-termo-synthesize-template-1"
-  (run 1 (x)
-    (eval-programo
-     `(run* (z)
-        (fresh (t1 t2 a b)
-          (== (cons t1 (cons t2 '())) z)
-          (== (cons 3 (cons ,x (cons b (cons 4 (cons a '()))))) t1)
-          (copy-termo t1 t2)))
-     '(((3 (_. . ()) (_. . (())) 4 (_. . ()))
-        (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((()))))))))
+  (time
+   (run 1 (x)
+     (eval-programo
+      `(run* (z)
+         (fresh (t1 t2 a b)
+           (== (cons t1 (cons t2 '())) z)
+           (== (cons 3 (cons ,x (cons b (cons 4 (cons a '()))))) t1)
+           (copy-termo t1 t2)))
+      '(((3 (_. . ()) (_. . (())) 4 (_. . ()))
+         (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((())))))))))
   '(a))
 
 (test "1"
