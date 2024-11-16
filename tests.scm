@@ -162,7 +162,59 @@
       (_. . (())) ;; t2
       ))))
 
-#!eof
+(test "copy-termo-8"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b)
+          (== (cons t1 (cons t2 '())) z)          
+          (== (cons 3 (cons a (cons b (cons 4 (cons a '()))))) t1)
+          (== 'cat t2)
+          (copy-termo t1 t2)))
+     x))
+  '(()))
+
+(test "copy-termo-9"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b c)
+          (== (cons t1 (cons t2 '())) z)          
+          (== (cons 3 (cons a (cons b (cons 4 (cons a '()))))) t1)
+          (== (cons 3 c) t2)
+          (copy-termo t1 t2)))
+     x))
+  '((((3 (_. . ()) (_. . (())) 4 (_. . ())) ;; t1
+      (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((())))) ;; t2
+      ))))
+
+(test "copy-termo-10"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b c d)
+          (== (cons t1 (cons t2 '())) z)          
+          (== (cons 3 (cons a (cons b (cons 4 (cons a '()))))) t1)
+          (== (cons 3 (cons c (cons d (cons 4 (cons c '()))))) t2)
+          (copy-termo t1 t2)))
+     x))
+  '((((3 (_. . ()) (_. . (())) 4 (_. . ())) ;; t1
+      (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((())))) ;; t2
+      ))))
+
+(test "copy-termo-11"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b c)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons 3 (cons a (cons b (cons 4 (cons a '()))))) t1)
+          (== (cons 3 (cons c (cons c (cons 4 (cons c '()))))) t2)
+          (copy-termo t1 t2)))
+     x))
+  '((((3 (_. . ()) (_. . (())) 4 (_. . ())) ;; t1
+      (3 (_. . ((()))) (_. . ((()))) 4 (_. . ((())))) ;; t2
+      ))))
 
 (test "1"
   (run* (x)
