@@ -258,6 +258,58 @@
   '(a
     ((if _.0 a _.1) (num _.0))))
 
+(test "copy-termo-synthesize-template-3a"
+  (time
+   (run* (x)
+     (eval-programo
+      `(run* (z)
+         (fresh (t1 t2 a)
+           (== (cons t1 (cons t2 '())) z)
+           (== a t1)
+           (== (cons 'cat (cons 'dog (cons 'cat '()))) t2)
+           (copy-termo t1 t2)))
+      x)))
+  '((((_. . ()) (cat dog cat)))))
+
+(test "copy-termo-synthesize-template-3b"
+  (time
+   (run 1 (x)
+     (eval-programo
+      `(run* (t2)
+         (fresh (t1 a b)
+           (== (cons a (cons b (cons ,x '()))) t1)
+           (== (cons 'cat (cons 'dog (cons 'cat '()))) t2)           
+           (copy-termo t1 t2)))
+      '((cat dog cat)))))
+  '(a))
+
+(test "copy-termo-synthesize-template-3c"
+  (time
+   (run 1 (x)
+     (eval-programo
+      `(run* (t2)
+         (fresh (t1 a b)
+           (== (cons a (cons ,x (cons a '()))) t1)
+           (== (cons 'cat (cons 'dog (cons 'cat '()))) t2)           
+           (copy-termo t1 t2)))
+      '((cat dog cat)))))
+  '(b))
+
+#|
+;; Fans kicked on
+(test "copy-termo-synthesize-template-3d"
+  (time
+   (run 1 (x y)
+     (eval-programo
+      `(run* (t2)
+         (fresh (t1 a b)
+           (== (cons a (cons ,x (cons ,y '()))) t1)
+           (== (cons 'cat (cons 'dog (cons 'cat '()))) t2)           
+           (copy-termo t1 t2)))
+      '((cat dog cat)))))
+  '???)
+|#
+
 (test "1"
   (run* (x)
     (eval-programo
