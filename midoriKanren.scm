@@ -8,31 +8,23 @@
 (define (peano n)
   (if (zero? n) '() `(,(peano (- n 1)))))
 
-(define (peanoo p)
-  (conde
-    [(== '() p)]
-    [(fresh (p1)
-       (== `(,p1) p)
-       (peanoo p1))]))
-
 (define (var?o x)
   (fresh (val)
-    (== `(var . ,val) x)
-    (peanoo val)))
+    ;; `val` is a Peano numeral    
+    (== `(var . ,val) x)))
 
-(define (var=?o x y)
+(define (var=?o x y)  
   (fresh (val)
+    ;; `val` is a Peano numeral
     (== `(var . ,val) x)
-    (== `(var . ,val) y)
-    (peanoo val)))
+    (== `(var . ,val) y)))
 
 (define (var=/=o x y)
   (fresh (val1 val2)
+    ;; `val1` and `val2` are Peano numerals
     (== `(var . ,val1) x)
     (== `(var . ,val2) y)
-    (=/= val1 val2)
-    (peanoo val1)
-    (peanoo val2)))
+    (=/= val1 val2)))
 
 (define (booleano b)
   (conde
@@ -279,6 +271,60 @@
        (eval-conde-clauses `(,c2 . ,c-rest) s/c env c-rest$)
        (mpluso c-$ c-rest$ $)))))
 
+(define (copy-term-lookupo var var/var^-store var^)
+  (fresh ()
+    (var?o var)
+    (conde
+      ((== '() var/var^-store)
+       (== #f var^))
+      ((fresh (v var^^ rest)
+         (== `((,v . ,var^^) . ,rest) var/var^-store)
+         (var?o v)
+         (var?o var^^)
+         (conde
+           ((== v var) (== var^ var^^))
+           ((=/= v var) (copy-term-lookupo var rest var^))))))))
+
+(define (copy-term-auxo t1-unwalked t1-copy s c c^ var/var^-store var/var^-store^)
+  (fresh (t1)
+    (walko t1-unwalked s t1)
+    (conde
+      [(numbero t1)
+       (== t1 t1-copy)
+       (== c c^)
+       (== var/var^-store var/var^-store^)]
+      [(symbolo t1)
+       (== t1 t1-copy)
+       (== c c^)
+       (== var/var^-store var/var^-store^)]
+      [(booleano t1)
+       (== t1 t1-copy)
+       (== c c^)
+       (== var/var^-store var/var^-store^)]
+      [(== '() t1)
+       (== t1 t1-copy)
+       (== c c^)
+       (== var/var^-store var/var^-store^)]
+      [(var?o t1)
+       (fresh (var^)
+         (conde
+           ((== #f var^)
+            (== `(var . ,c) t1-copy)
+            (== `(,c) c^)
+            (== `((,t1 . (var . ,c)) . ,var/var^-store) var/var^-store^))
+           ((var?o var^)
+            (== var^ t1-copy)
+            (== c c^)
+            (== var/var^-store var/var^-store^)))
+         (copy-term-lookupo t1 var/var^-store var^))]      
+      [(fresh (a d a-copy d-copy c^^ var/var^-store^^)
+         (== `(,a . ,d) t1)
+         (== `(,a-copy . ,d-copy) t1-copy)
+         (=/= 'var a)
+         (=/= 'var a-copy)
+         (copy-term-auxo a a-copy s c c^^ var/var^-store var/var^-store^^)
+         (copy-term-auxo d d-copy s c^^ c^ var/var^-store^^ var/var^-store^))])))
+
 (define (eval-gexpro expr s/c env $)
   (conde
     [(fresh (ge)
@@ -312,6 +358,16 @@
        (== `((,x . ,v) . ,env) env^)
        (eval-schemeo e env v)
        (eval-gexpro `(conj* ,ge . ,ge*) s/c env^ $))]
+    [(fresh (te1 te2 t1 t2 t1-copy s c s^ c^ _)
+       (== `(copy-termo ,te1 ,te2) expr)
+       (== `(,s . ,c) s/c)
+       (eval-schemeo te1 env t1)
+       (eval-schemeo te2 env t2)
+       (copy-term-auxo t1 t1-copy s c c^ '() _)
+       (conde
+         [(== #f s^) (== '() $)]
+         [(=/= #f s^) (== `((,s^ . ,c^)) $)])       
+       (unifyo t1-copy t2 s s^))]
     [(fresh (id params geb ge ge* env^)
        (== `(letrec-rel ((,id ,params ,geb)) ,ge . ,ge*) expr)
        (symbolo id)

@@ -1,6 +1,169 @@
 (load "faster-miniKanren/test-check.scm")
 (load "midoriKanren.scm")
 
+(test "copy-term-lookupo-1"
+  (run* (var var^ var/var^-store)
+    (== `(var . ()) var)
+    (== '() var/var^-store)
+    (copy-term-lookupo var var/var^-store var^))
+  '(((var . ()) #f ())))
+
+(test "copy-term-lookupo-2"
+  (run* (var var^ var/var^-store)
+    (== `(var . ()) var)
+    (== `(((var . ()) . (var . (())))) var/var^-store)
+    (copy-term-lookupo var var/var^-store var^))
+  '(((var . ()) (var . (())) (((var . ()) . (var . (())))))))
+
+(test "copy-term-lookupo-3"
+  (run* (var var^ var/var^-store)
+    (== `(var . ()) var)
+    (== `(((var . (())) . (var . ((()))))) var/var^-store)
+    (copy-term-lookupo var var/var^-store var^))
+  '(((var . ()) #f (((var . (())) . (var . ((()))))))))
+
+(test "copy-term-lookupo-4"
+  (run* (var var^ var/var^-store)
+    (== `(var . ((()))) var)
+    (== `(((var . ()) . (var . (()))) ((var . ((()))) . (var . (((())))))) var/var^-store)
+    (copy-term-lookupo var var/var^-store var^))
+  '(((var . ((()))) (var . (((())))) (((var . ()) . (var . (()))) ((var . ((()))) . (var . (((())))))))))
+
+(test "copy-term-auxo-0a"
+  (run* (t1-copy t1-copy^ c^ c^^ var/var^-store^ var/var^-store^^)
+    (copy-term-auxo `(var . ()) t1-copy '() '(()) c^ '() var/var^-store^)
+    (copy-term-auxo `(var . ()) t1-copy^ '() c^ c^^ var/var^-store^ var/var^-store^^))
+  '(((var . (())) ;; t1-copy 
+     (var . (())) ;; t1-copy^ 
+     ((())) ;; c^ 
+     ((())) ;; c^^ 
+     (((var . ()) . (var . (())))) ;; var/var^-store^ 
+     (((var . ()) . (var . (())))) ;; var/var^-store^^
+     )))
+
+(test "copy-term-auxo-2a"
+  (run 1 (t1-copy c^ var/var^-store^)
+    (copy-term-auxo `((var . ()) . (var . ())) t1-copy '() '(()) c^ '() var/var^-store^))
+  '((((var . (())) . (var . (()))) ;; t1-copy
+     ((()))                        ;; c^
+     (((var . ()) . (var . (())))) ;; var/var^-store^
+     )))
+
+(test "copy-term-auxo-2b"
+  (run* (t1-copy c^ var/var^-store^)
+    (copy-term-auxo `((var . ()) . (var . ())) t1-copy '() '(()) c^ '() var/var^-store^))
+  '((((var . (())) . (var . (())))
+     ((()))
+     (((var . ()) . (var . (())))))))
+
+(test "copy-term-auxo-3"
+  (run* (t1-copy c^ var/var^-store^)
+    (copy-term-auxo `(var . ()) t1-copy '() '(()) c^ '() var/var^-store^))
+  '(((var . (()))
+     ((()))
+     (((var . ()) . (var . (())))))))
+
+(test "copy-term-auxo-4"
+  (run* (t1-copy c^ var/var^-store^)
+    (copy-term-auxo `(var . ()) t1-copy '() '((())) c^ `(((var . ()) . (var . (())))) var/var^-store^))
+  '(((var . (()))
+     ((()))
+     (((var . ()) . (var . (())))))))
+
+(test "copy-termo-1"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (copy-termo '5 z))
+     x))
+  '((5)))
+
+(test "copy-termo-2"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons 3 4) t1)
+          (copy-termo t1 t2)))
+     x))
+  '((((3 . 4)
+      (3 . 4)))))
+
+(test "copy-termo-3"
+  (run* (x)
+    (eval-programo
+     `(run ,(peano 1) (z)
+        (fresh (t1 t2 a)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons 'cat (cons #f (cons #t (cons 5 (cons '() '()))))) t1)
+          (copy-termo t1 t2)))
+     x))
+  '((((cat #f #t 5 ())
+      (cat #f #t 5 ())))))
+
+(test "copy-termo-4"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a)
+          (== (cons t1 (cons t2 '())) z)
+          (== a t1)
+          (copy-termo t1 t2)))
+     x))
+  '((((_. . ()) (_. . (()))))))
+
+(test "copy-termo-5"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons a b) t1)
+          (copy-termo t1 t2)))
+     x))
+  '(((((_.) _. ()) ((_. (())) _. ((())))))))
+
+(test "copy-termo-6"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons a a) t1)
+          (copy-termo t1 t2)))
+     x))
+  '(((((_. . ()) . (_. . ()))     ;; t1
+      ((_. . (())) . (_. . (()))) ;; t2
+      ))))
+
+(test "copy-termo-7"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2 a b)
+          (== (cons t1 (cons t2 '())) z)
+          (== (cons 3 (cons a (cons b (cons 4 (cons a '()))))) t1)
+          (copy-termo t1 t2)))
+     x))
+  '((((3 (_. . ()) (_. . (())) 4 (_. . ())) ;; t1
+      (3 (_. . ((()))) (_. . (((())))) 4 (_. . ((())))) ;; t2
+      ))))
+
+(test "copy-termo-8"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (t1 t2)
+          (== (cons t1 (cons t2 '())) z)
+          (copy-termo t1 t2)))
+     x))
+  '((((_. . ()) ;; t1
+      (_. . (())) ;; t2
+      ))))
+
+#!eof
+
 (test "1"
   (run* (x)
     (eval-programo
