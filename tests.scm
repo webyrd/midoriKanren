@@ -756,6 +756,136 @@
       rv)))
   '(((((S K) I) K) ((K K) (I K)) K ((K K) K) K)))
 
+;; 1.7 seconds on Will's 2020 MBP
+(test "cl-reducer-second-version-2-synthesize-part-of-S-rule-1"
+  (time
+   (run 1 (rv)
+     (eval-programo
+      `(run* (q)
+         (letrec-rel ((contracto (T T^)
+                        (fresh (rule-template rule-template-copy x y z)
+                          (== (cons T (cons '=> (cons T^ '()))) rule-template-copy)
+                          (conde
+                            ((== (cons
+                                   (cons 'I (cons x '()))
+                                   (cons '=> (cons x '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons 'K (cons x '())) (cons y '()))
+                                   (cons '=> (cons x '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons (cons 'S (cons x '())) (cons ,rv '())) (cons z '()))
+                                   (cons
+                                     '=>
+                                     (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '())))
+                                 rule-template)))
+                          (copy-termo rule-template rule-template-copy))))
+           (letrec-rel ((->1wo (T T^)
+                          (conde
+                            ((contracto T T^))
+                            ((fresh (M N P)
+                               (== (cons M (cons N '())) T)
+                               (conde
+                                 ((== (cons P (cons N '())) T^)
+                                  (->1wo M P))
+                                 ((== (cons M (cons P '())) T^)
+                                  (->1wo N P))))))))
+             (letrec-rel ((->wo (M N)
+                            (conde
+                              ((== M N))
+                              ((fresh (P) (->1wo M P) (->wo P N))))))
+               (->wo '(((S K) I) K) q)))))
+      '((((S K) I) K) ((K K) (I K)) K ((K K) K) K))))
+  '(y))
+
+;; 24 seconds on Will's 2020 MBP
+(test "cl-reducer-second-version-2-synthesize-part-of-I-rule-1"
+  (time
+   (run 1 (rv)
+     (eval-programo
+      `(run* (q)
+         (letrec-rel ((contracto (T T^)
+                        (fresh (rule-template rule-template-copy x y z)
+                          (== (cons T (cons '=> (cons T^ '()))) rule-template-copy)
+                          (conde
+                            ((== (cons
+                                   (cons 'I (cons x '()))
+                                   (cons '=> (cons ,rv '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons 'K (cons x '())) (cons y '()))
+                                   (cons '=> (cons x '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons (cons 'S (cons x '())) (cons y '())) (cons z '()))
+                                   (cons
+                                     '=>
+                                     (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '())))
+                                 rule-template)))
+                          (copy-termo rule-template rule-template-copy))))
+           (letrec-rel ((->1wo (T T^)
+                          (conde
+                            ((contracto T T^))
+                            ((fresh (M N P)
+                               (== (cons M (cons N '())) T)
+                               (conde
+                                 ((== (cons P (cons N '())) T^)
+                                  (->1wo M P))
+                                 ((== (cons M (cons P '())) T^)
+                                  (->1wo N P))))))))
+             (letrec-rel ((->wo (M N)
+                            (conde
+                              ((== M N))
+                              ((fresh (P) (->1wo M P) (->wo P N))))))
+               (->wo '(((S K) I) K) q)))))
+      '((((S K) I) K) ((K K) (I K)) K ((K K) K) K))))
+  '(x))
+
+;; 24 seconds on Will's 2020 MBP
+(test "cl-reducer-second-version-2-synthesize-part-of-K-rule-1"
+  (time
+   (run 1 (rv)
+     (eval-programo
+      `(run* (q)
+         (letrec-rel ((contracto (T T^)
+                        (fresh (rule-template rule-template-copy x y z)
+                          (== (cons T (cons '=> (cons T^ '()))) rule-template-copy)
+                          (conde
+                            ((== (cons
+                                   (cons 'I (cons x '()))
+                                   (cons '=> (cons x '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons 'K (cons ,rv '())) (cons y '()))
+                                   (cons '=> (cons x '())))
+                                 rule-template))
+                            ((== (cons
+                                   (cons (cons (cons 'S (cons x '())) (cons y '())) (cons z '()))
+                                   (cons
+                                     '=>
+                                     (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '())))
+                                 rule-template)))
+                          (copy-termo rule-template rule-template-copy))))
+           (letrec-rel ((->1wo (T T^)
+                          (conde
+                            ((contracto T T^))
+                            ((fresh (M N P)
+                               (== (cons M (cons N '())) T)
+                               (conde
+                                 ((== (cons P (cons N '())) T^)
+                                  (->1wo M P))
+                                 ((== (cons M (cons P '())) T^)
+                                  (->1wo N P))))))))
+             (letrec-rel ((->wo (M N)
+                            (conde
+                              ((== M N))
+                              ((fresh (P) (->1wo M P) (->wo P N))))))
+               (->wo '(((S K) I) K) q)))))
+      '((((S K) I) K) ((K K) (I K)) K ((K K) K) K))))
+  '(x))
+
+
 
 #|
 `((,x) (I ,x) => ,x)
