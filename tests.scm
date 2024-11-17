@@ -463,6 +463,75 @@
          ((I K) (K K)))))))
   '(S))
 
+(test "copy-S-rule-1-infer-rule-2a"
+  (time
+   (run 2 (rv)
+     (eval-programo
+      `(run* (q)
+         (fresh (rule-template rule-template-copy x y z r ans)
+           (== (cons rule-template-copy (cons ans '())) q)
+           ;; rule-template = `((,x ,y ,z) (((S ,x) ,y) ,z) => ((,x ,z) (,y ,z)))
+           (== (cons
+                 (cons x (cons y (cons z '())))
+                 (cons
+                   (cons (cons (cons 'S (cons ,rv '())) (cons y '())) (cons z '()))
+                   (cons
+                     '=>
+                     (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '()))))
+               rule-template)
+           (== (cons
+                 (cons 'I (cons 'K (cons 'K '())))
+                 (cons
+                   r
+                   (cons
+                     '=>
+                     (cons ans '()))))
+               rule-template-copy)
+           (copy-termo rule-template rule-template-copy)
+           ))
+      '((((I K K)
+          (((S I) K) K)
+          =>
+          ((I K) (K K)))
+         ((I K) (K K)))))))
+  '('I x))
+
+(test "copy-S-rule-1-infer-rule-2b"
+  (time
+   (run 1 (rv)
+     (absento 'S rv)
+     (absento 'K rv)     
+     (absento 'I rv)
+     (eval-programo
+      `(run* (q)
+         (fresh (rule-template rule-template-copy x y z r ans)
+           (== (cons rule-template-copy (cons ans '())) q)
+           ;; rule-template = `((,x ,y ,z) (((S ,x) ,y) ,z) => ((,x ,z) (,y ,z)))
+           (== (cons
+                 (cons x (cons y (cons z '())))
+                 (cons
+                   (cons (cons (cons 'S (cons ,rv '())) (cons y '())) (cons z '()))
+                   (cons
+                     '=>
+                     (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '()))))
+               rule-template)
+           (== (cons
+                 (cons 'I (cons 'K (cons 'K '())))
+                 (cons
+                   r
+                   (cons
+                     '=>
+                     (cons ans '()))))
+               rule-template-copy)
+           (copy-termo rule-template rule-template-copy)
+           ))
+      '((((I K K)
+          (((S I) K) K)
+          =>
+          ((I K) (K K)))
+         ((I K) (K K)))))))
+  '(x))
+
 #|
 `((,x) (I ,x) => ,x)
 (list (list x) (list 'I x) '=> x)
