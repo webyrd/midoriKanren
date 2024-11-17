@@ -800,7 +800,11 @@ Sxyz = xz(yz)
 
 ;; TODO
 ;;
-;; use `copy-termo` and templates to implement sequent calculus
+;; use `copy-termo` and templates to implement sequent calculus,
+;; natural deduction, Hilbert systems, etc.
+;;
+;; Templates and copy-termo may help with schemas.  Also, Peano
+;; axioms.  semi-unification.  anti-unification.  let-polymorphism.
 
 ;; TODO
 ;;
