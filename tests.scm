@@ -600,6 +600,41 @@
       rv)))
   '((((((K I) S) => I) I))))
 
+
+(test "cl-reducer-first-version-1"
+  (run* (rv)
+    (eval-programo
+     `(run* (q)
+        (letrec-rel ((contracto (T T^)
+                       (conde
+                         ((== (cons 'I (cons T^ '())) T))
+                         ((fresh (y)
+                            (== (cons (cons 'K (cons T^ '())) (cons y '())) T)))
+                         ((fresh (x y z)
+                            (== (cons (cons (cons 'S (cons x '())) (cons y '())) (cons z '())) T)
+                            (== (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) T^))))))
+          (letrec-rel ((->1wo (T T^)
+                         (conde
+                           ((contracto T T^))
+                           ((fresh (M N P)
+                              (== (cons M (cons N '())) T)
+                              (conde
+                                ((== (cons P (cons N '())) T^)
+                                 (->1wo M P))
+                                ((== (cons M (cons P '())) T^)
+                                 (->1wo N P))))))))
+            (letrec-rel ((->wo (M N)
+                           (conde
+                             ((== M N))
+                             ((fresh (P) (->1wo M P) (->wo P N))))))
+              (->wo '(I (I S)) q)))))
+     rv))
+  '(((I (I S))
+     (I S)
+     (I S)
+     S
+     S)))
+
 #|
 `((,x) (I ,x) => ,x)
 (list (list x) (list 'I x) '=> x)
