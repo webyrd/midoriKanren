@@ -800,6 +800,10 @@ Sxyz = xz(yz)
 
 ;; TODO
 ;;
+;; use `copy-termo` and templates to implement sequent calculus
+
+;; TODO
+;;
 ;; use `copytermo` for copying lambda terms
 ;;
 ;; `(lambda (,x) (lambda (,y) ,x))
