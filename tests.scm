@@ -542,6 +542,7 @@
            ;; rule-template = `((I ,x) => ,x)
            (== (cons (cons 'I (cons x '())) (cons '=> (cons x '()))) rule-template)
            (== (cons r (cons '=> (cons ans '()))) rule-template-copy)
+           ;; rule application: (I (K S))
            (== (cons 'I (cons (cons 'K (cons 'S '())) '())) r)
            (copy-termo rule-template rule-template-copy)))
       rv)))
@@ -569,6 +570,7 @@
                    '=>
                    (cons ans '())))
                rule-template-copy)
+           ;; rule application: (((S K) I) S)
            (== (cons (cons (cons 'S (cons 'K '())) (cons 'I '())) (cons 'S '())) r)
            (copy-termo rule-template rule-template-copy)))
       rv)))
