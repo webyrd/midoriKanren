@@ -310,6 +310,107 @@
   '???)
 |#
 
+;; TODO
+;;
+;; use copytermo for SKI reduction,
+;; copying templates like `((I ,x) => ,x)
+;; and then unifying the logic variable with a term.
+
+(test "copy-I-rule-1"
+  (run* (rv)
+    (eval-programo
+     `(run* (q)
+        (fresh (rule-template rule-template-copy x)
+          (== (cons rule-template (cons rule-template-copy '())) q)
+          ;; rule-template = `((,x) (I ,x) => ,x)
+          (== (cons (cons x '()) (cons (cons 'I (cons x '())) (cons '=> (cons x '())))) rule-template)
+          (copy-termo rule-template rule-template-copy)))
+     rv))
+  '((((((_. . ()))   (I (_. . ()))   => (_. . ()))
+      (((_. . (()))) (I (_. . (()))) => (_. . (())))))))
+
+(test "copy-I-rule-1b"
+  (run* (rv)
+    (eval-programo
+     `(run* (q)
+        (fresh (rule-template rule-template-copy x rest)
+          (== (cons rule-template (cons rule-template-copy '())) q)
+          ;; rule-template = `((,x) (I ,x) => ,x)
+          (== (cons (cons x '()) (cons (cons 'I (cons x '())) (cons '=> (cons x '())))) rule-template)
+          (== (cons (cons 'K '()) rest) rule-template-copy)
+          (copy-termo rule-template rule-template-copy)))
+     rv))
+  '((((((_.)) (I (_.)) => (_.))
+      ((K) (I K) => K)))))
+
+(test "copy-I-rule-1c"
+  (time
+   (run* (rv)
+     (eval-programo
+      `(run* (q)
+         (fresh (rule-template rule-template-copy x r ans)
+           (== (cons rule-template (cons rule-template-copy (cons ans '()))) q)
+           ;; rule-template = `((,x) (I ,x) => ,x)
+           (== (cons (cons x '()) (cons (cons 'I (cons x '())) (cons '=> (cons x '())))) rule-template)
+           (== (cons (cons 'K '()) (cons r (cons '=> (cons ans '())))) rule-template-copy)
+           (copy-termo rule-template rule-template-copy)))
+      rv)))
+  '((((((_. . ())) (I (_. . ())) => (_. . ()))
+      ((K) (I K) => K)
+      K))))
+
+#|
+`((,x) (I ,x) => ,x)
+(list (list x) (list 'I x) '=> x)
+(cons (cons x '()) (cons (cons 'I (cons x '())) (cons '=> (cons x '()))))
+|#
+
+#|
+`((,x) (I ,x) => ,x)
+`((,x ,y) ((K ,x) ,y) => ,x)
+`((,x ,y ,z) (((S ,x) ,y) ,z) => ((,x ,z) (,y ,z)))
+|#
+
+#|
+`((I ,x) => ,x)
+`(((K ,x) ,y) => ,x)
+`((((S ,x) ,y) ,z) => ((,x ,z) (,y ,z)))
+|#
+
+#|
+Ix = x
+`(I ,x) => x
+
+Kxy = x
+`((K ,x) ,y) => x
+
+Sxyz = xz(yz)
+`(((S ,x) ,y) ,z) => `((,x ,z) (,y ,z))
+|#
+
+;; TODO
+;;
+;; use `copytermo` for copying lambda terms
+;;
+;; `(lambda (,x) (lambda (,y) ,x))
+;;
+;; Problem is that lexical scope isn't respected with this encoding,
+;; in terms of shadowing:
+;;
+;; `(lambda (,x) (lambda (,x) ,x))
+;;
+;; Hmm---could I write an alpha renamer?
+;; A gensym-er?
+;; A compiler?
+;;
+;;
+;; try using copy-termo for template for let-polymprphism for H-M type inferencer
+;; -- will this allow us to have principle typing?
+;;
+;; actually, a type inferencer in general sounds fun and interesting, esp. for synthesis
+;;
+;; can we do subtyping?
+
 (test "1"
   (run* (x)
     (eval-programo
