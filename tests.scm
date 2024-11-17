@@ -429,6 +429,7 @@
        ((I K) (K K)))
       ((I K) (K K))))))
 
+;; run 2 takes a long time or diverges
 (test "copy-S-rule-1-infer-rule-1"
   (time
    (run 1 (rv)
