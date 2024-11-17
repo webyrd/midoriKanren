@@ -576,6 +576,30 @@
       rv)))
   '(((((((S K) I) S) => ((K S) (I S))) ((K S) (I S))))))
 
+(test "copy-K-rule-2"
+  (time
+   (run* (rv)
+     (eval-programo
+      `(run* (q)
+         (fresh (rule-template rule-template-copy x y r ans)
+           (== (cons rule-template-copy (cons ans '())) q)
+           ;; rule-template = `(((K ,x) ,y) => ,x)
+           (== (cons
+                 (cons (cons 'K (cons x '())) (cons y '()))
+                 (cons '=> (cons x '())))
+               rule-template)
+           (== (cons
+                 r
+                 (cons
+                   '=>
+                   (cons ans '())))
+               rule-template-copy)
+           ;; rule application: ((K I) S)
+           (== (cons (cons 'K (cons 'I '())) (cons 'S '())) r)
+           (copy-termo rule-template rule-template-copy)))
+      rv)))
+  '((((((K I) S) => I) I))))
+
 #|
 `((,x) (I ,x) => ,x)
 (list (list x) (list 'I x) '=> x)
