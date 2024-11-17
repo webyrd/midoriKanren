@@ -635,6 +635,10 @@
      S
      S)))
 
+;; TODO -- rewrite the SKI reducer so that `contracto` uses
+;; `copy-termo` and templates
+
+
 #|
 `((,x) (I ,x) => ,x)
 (list (list x) (list 'I x) '=> x)
