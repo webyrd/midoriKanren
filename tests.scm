@@ -310,8 +310,6 @@
   '???)
 |#
 
-;; TODO
-;;
 ;; use copytermo for SKI reduction,
 ;; copying templates like `((I ,x) => ,x)
 ;; and then unifying the logic variable with a term.
@@ -930,6 +928,15 @@ Sxyz = xz(yz)
 
 ;; TODO
 ;;
+;; implement the equivalent of `copy_term/4` from
+;;
+;; https://www.swi-prolog.org/pldoc/doc_for?object=copy_term/4
+;;
+;; which only copies the specified variables, rather than copying all
+;; free varibles in the "template".
+
+;; TODO
+;;
 ;; use `copy-termo` and templates to implement sequent calculus,
 ;; natural deduction, Hilbert systems, etc.
 ;;
@@ -958,6 +965,22 @@ Sxyz = xz(yz)
 ;; actually, a type inferencer in general sounds fun and interesting, esp. for synthesis
 ;;
 ;; can we do subtyping?
+
+;; TODO
+;;
+;; implement `subsumes-termo` in midoriKanren, similar to
+;;
+;; https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+;;
+;; I think the implementation will need to be "from scratch" rather than
+;; using `copy-termo` or whatever, to get the correct semantics.
+;;
+;; For example, would need to properly handle the equivalent of this
+;; test from
+;; https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+;;
+;; ?- subsumes_term(f(1,B),f(A,2)).  % would unify, but Generic is not
+;; "more generic" (nor is Specific "more generic")
 
 (test "1"
   (run* (x)
