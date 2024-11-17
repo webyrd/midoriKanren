@@ -937,14 +937,6 @@ Sxyz = xz(yz)
 
 ;; TODO
 ;;
-;; use `copy-termo` and templates to implement sequent calculus,
-;; natural deduction, Hilbert systems, etc.
-;;
-;; Templates and copy-termo may help with schemas.  Also, Peano
-;; axioms.  semi-unification.  anti-unification.  let-polymorphism.
-
-;; TODO
-;;
 ;; use `copytermo` for copying lambda terms
 ;;
 ;; `(lambda (,x) (lambda (,y) ,x))
@@ -953,6 +945,9 @@ Sxyz = xz(yz)
 ;; in terms of shadowing:
 ;;
 ;; `(lambda (,x) (lambda (,x) ,x))
+;;
+;; However, a careful encoding and use of the equivalent of
+;; `copy_term/4` might be sufficient.
 ;;
 ;; Hmm---could I write an alpha renamer?
 ;; A gensym-er?
@@ -965,6 +960,14 @@ Sxyz = xz(yz)
 ;; actually, a type inferencer in general sounds fun and interesting, esp. for synthesis
 ;;
 ;; can we do subtyping?
+
+;; TODO
+;;
+;; use `copy-termo` and templates to implement sequent calculus,
+;; natural deduction, Hilbert systems, etc.
+;;
+;; Templates and copy-termo may help with schemas.  Also, Peano
+;; axioms.  semi-unification.  anti-unification.  let-polymorphism.
 
 ;; TODO
 ;;
