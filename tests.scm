@@ -429,6 +429,32 @@
        ((I K) (K K)))
       ((I K) (K K))))))
 
+(test "copy-S-rule-2"
+  (time
+   (run* (rv)
+     (eval-programo
+      `(run* (q)
+         (fresh (rule-template rule-template-copy x y z r ans)
+           (== (cons rule-template-copy (cons ans '())) q)
+           ;; rule-template = `((((S ,x) ,y) ,z) => ((,x ,z) (,y ,z)))
+           (== (cons
+                 (cons (cons (cons 'S (cons x '())) (cons y '())) (cons z '()))
+                 (cons
+                   '=>
+                   (cons (cons (cons x (cons z '())) (cons (cons y (cons z '())) '())) '())))
+               rule-template)
+           (== (cons
+                 r
+                 (cons
+                   '=>
+                   (cons ans '())))
+               rule-template-copy)
+           (== (cons (cons (cons 'S (cons 'K '())) (cons 'I '())) (cons 'S '())) r)
+           (copy-termo rule-template rule-template-copy)))
+      rv)))
+  '(((((((S K) I) S) => ((K S) (I S))) ((K S) (I S))))))
+
+
 ;; run 2 takes a long time or diverges
 (test "copy-S-rule-1-infer-rule-1"
   (time
