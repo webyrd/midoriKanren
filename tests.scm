@@ -9,6 +9,8 @@
           (== (cons vars-in-e (cons in-e (cons vars-out-e (cons out-e '())))) z)
           (== (cons a (cons b '())) vars-in-e)
           (== (cons b (cons 'cat (cons c (cons a (cons b '()))))) in-e)
+          ;; interface based on:
+          ;; https://www.swi-prolog.org/pldoc/doc_for?object=copy_term/4          
           (copy-term-4o vars-in-e in-e vars-out-e out-e)))
      x))
   '(((((_. . ()) (_. . (()))) ;; vars-in-e
