@@ -19,6 +19,19 @@
       ((_. . ((((()))))) cat (_. . ((()))) (_. . (((())))) (_. . ((((())))))) ;; out-e
       ))))
 
+(test "copy-term-4o-2"
+  (run* (qvar)
+    (eval-programo
+     `(run* (z)
+        (fresh (vars-out-e out-e x y)
+          (== (cons vars-out-e (cons out-e '())) z)
+          ;; interface based on:
+          ;; https://www.swi-prolog.org/pldoc/doc_for?object=copy_term/4
+          ;; This example is adapted from that documentation:
+          (copy-term-4o (cons x '()) (cons 'q (cons x (cons y '()))) vars-out-e out-e)))
+     qvar))
+  '(((((_. . ())) (q (_. . ()) (_. . (())))))))
+
 
 (test "copy-term-lookupo-1"
   (run* (var var^ var/var^-store)
