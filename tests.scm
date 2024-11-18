@@ -1,6 +1,13 @@
 (load "faster-miniKanren/test-check.scm")
 (load "midoriKanren.scm")
 
+;; TODO
+;; implement `conda`, `condu`, `onceo`
+;;
+;; implement cycle detection/occurs check for unification,
+;; `subsumes-termo` (and for all variants of `copy-termo`, if
+;; necessary)
+
 ;; term subsumption tests, including tests adapted from
 ;; https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
 
@@ -17,9 +24,29 @@
     (eval-programo
      `(run* (z)
         (fresh ()
-          (subsumes-termo z '5)))
+          (subsumes-termo z 5)))
      x))
   '(((_. . ()))))
+
+(test "subsumes-termo-2b"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh ()
+          (subsumes-termo z 5)
+          (== 6 z)))
+     x))
+  '((6)))
+
+(test "subsumes-termo-2c"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh ()
+          (== 6 z)
+          (subsumes-termo z 5)))
+     x))
+  '(()))
 
 (test "subsumes-termo-3"
   (run* (x)
@@ -177,6 +204,30 @@ true.
                           (cons 'f (cons 'a (cons (cons 'g (cons 'b '())) '()))))))
      x))
   '(((_. . ()))))
+
+(test "subsumes-termo-16b"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons 'b '())) '()))))
+          (== 'cat a)
+          (== 'dog b)))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-16c"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (== 'dog b)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons 'b '())) '()))))
+          (== 'cat a)))
+     x))
+  '(()))
 
 #|
 from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
