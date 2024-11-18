@@ -1,6 +1,298 @@
 (load "faster-miniKanren/test-check.scm")
 (load "midoriKanren.scm")
 
+;; term subsumption tests, including tests adapted from
+;; https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+(test "subsumes-termo-1"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (subsumes-termo 5 5))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-2"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh ()
+          (subsumes-termo z '5)))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-3"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh ()
+          (subsumes-termo 5 z)))
+     x))
+  '(()))
+
+(test "subsumes-termo-4"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh ()
+          (subsumes-termo z z)))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-5"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (subsumes-termo (cons 3 4) (cons 3 4)))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-6"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons a b) (cons 3 4))))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-7"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 3 4) (cons a b))))
+     x))
+  '(()))
+
+(test "subsumes-termo-8"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo (cons a b) (cons c c))))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-9"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo (cons a b) c)))
+     x))
+  '(()))
+
+(test "subsumes-termo-10"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo c (cons a b))))
+     x))
+  '(((_. . ()))))
+
+(test "subsumes-termo-11"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo (cons c c) (cons a b))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(1,B),f(A,2)).       % would unify, but Generic is not "more generic" (nor is Specific "more generic")
+false.
+|#
+(test "subsumes-termo-12"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons 1 (cons b '()))) (cons 'f (cons a (cons 2 '()))))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,A),f(A,2)).       % unify but Generic is too constrained to give Specific by binding A
+false.
+|#
+(test "subsumes-termo-13"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a)
+          (subsumes-termo (cons 'f (cons a (cons a '()))) (cons 'f (cons a (cons 2 '()))))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(C,C),f(A,2)).       % same as above
+false.
+|#
+(test "subsumes-termo-14"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a c)
+          (subsumes-termo (cons 'f (cons c (cons c '()))) (cons 'f (cons a (cons 2 '()))))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,B),f(a,g(b))).    % somewhat more complex
+true.
+|#
+(test "subsumes-termo-15"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons b '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons 'b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,g(B)),f(a,g(b))).
+true.
+|#
+(test "subsumes-termo-16"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons 'b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,g(b)),f(a,g(B))).
+false.
+|#
+(test "subsumes-termo-17"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons 'b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,B),f(a,g(B))).    % unification would yield a cyclic structure
+false.
+|#
+;;
+;; TODO this test should return (()), however we currently aren't
+;; enforcing the occurs check.
+(test "subsumes-termo-18"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons b '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,C),f(a,g(B))).
+true.
+|#
+(test "subsumes-termo-19"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo (cons 'f (cons a (cons c '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,g(C)),f(a,g(B))).
+true.
+|#
+(test "subsumes-termo-20"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b c)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons c '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(A,g(B)),f(a,g(B))).
+true.
+|#
+(test "subsumes-termo-21"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons a (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(((_. . ()))))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(B,g(B)),f(a,g(B))).
+false.
+|#
+(test "subsumes-termo-22"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (b)
+          (subsumes-termo (cons 'f (cons b (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons 'a (cons (cons 'g (cons b '())) '()))))))
+     x))
+  '(()))
+
+#|
+from https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+
+?- subsumes_term(f(B,g(B)),f(a,g(a))).
+true.
+|#
+(test "subsumes-termo-23"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (a b)
+          (subsumes-termo (cons 'f (cons b (cons (cons 'g (cons b '())) '())))
+                          (cons 'f (cons a (cons (cons 'g (cons a '())) '()))))))
+     x))
+  '(((_. . ()))))
+
 (test "copy-term-4o-1"
   (run* (x)
     (eval-programo

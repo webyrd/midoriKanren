@@ -171,6 +171,68 @@
             (unifyo u-a v-a s s-a)
             (unifyo u-d v-d s-a s1)]))])))
 
+(define (subsumes-term-lookupo var var/term-store var/term)
+  (fresh ()
+    (var?o var)
+    (conde
+      ((== '() var/term-store)
+       (== #f var/term))
+      ((fresh (v term^ rest)
+         (== `((,v . ,term^) . ,rest) var/term-store)
+         (var?o v)
+         (conde
+           ((== v var) (== `(,v . ,term^) var/term))
+           ((=/= v var) (subsumes-term-lookupo var rest var/term))))))))
+
+(define (subsumes-term-auxo generic-unwalked specific-unwalked s gen-var/spec-term-store gen-var/spec-term-store^)
+  (fresh (gen spec)
+    (walko generic-unwalked s gen)
+    (walko specific-unwalked s spec)
+    (conde
+      [(var?o gen)
+       (fresh (var/term)
+         (subsumes-term-lookupo gen gen-var/spec-term-store var/term)
+         (conde
+           ((== #f var/term)
+            (== `((,gen . ,spec) . ,gen-var/spec-term-store) gen-var/spec-term-store^))
+           ((fresh (term)
+              (== `(,gen . ,term) var/term)
+              (conde
+                ((== term spec)
+                 (== gen-var/spec-term-store gen-var/spec-term-store^))
+                ((=/= term spec)
+                 (== #f gen-var/spec-term-store^)))))))]
+      [(conde
+         ((numbero gen))
+         ((symbolo gen))
+         ((booleano gen))
+         ((== '() gen)))
+       (conde
+         ((== gen spec) (== gen-var/spec-term-store gen-var/spec-term-store^))
+         ((=/= gen spec) (== #f gen-var/spec-term-store^)))]
+      [(fresh (a d)
+         (== `(,a . ,d) gen)
+         (=/= 'var a))
+       (== #f gen-var/spec-term-store^)
+       (conde
+         ((var?o spec))
+         ((numbero spec))
+         ((symbolo spec))
+         ((booleano spec))
+         ((== '() spec)))]
+      [(fresh (gen-a gen-d spec-a spec-d gen-var/spec-term-store^^)
+         (== `(,gen-a . ,gen-d) gen)
+         (== `(,spec-a . ,spec-d) spec)
+         (=/= 'var gen-a)
+         (=/= 'var spec-a)
+         (conde
+           [(== #f gen-var/spec-term-store^^)
+            (== #f gen-var/spec-term-store^)
+            (subsumes-term-auxo gen-a spec-a s gen-var/spec-term-store gen-var/spec-term-store^^)]
+           [(=/= #f gen-var/spec-term-store^^)
+            (subsumes-term-auxo gen-a spec-a s gen-var/spec-term-store gen-var/spec-term-store^^)
+            (subsumes-term-auxo gen-d spec-d s gen-var/spec-term-store^^ gen-var/spec-term-store^)]))])))
+
 (define mzero '())
 
 (define (mpluso $1 $2 $)
@@ -316,7 +378,7 @@
             (== var^ t1-copy)
             (== c c^)
             (== var/var^-store var/var^-store^)))
-         (copy-term-lookupo t1 var/var^-store var^))]      
+         (copy-term-lookupo t1 var/var^-store var^))]
       [(fresh (a d a-copy d-copy c^^ var/var^-store^^)
          (== `(,a . ,d) t1)
          (== `(,a-copy . ,d-copy) t1-copy)
@@ -371,6 +433,18 @@
          [(== #f s1) (== '() $)]
          [(=/= #f s1) (== `((,s1 . ,c)) $)])
        (unifyo v1 v2 s s1))]
+    [(fresh (generic-te specific-te generic specific s c gen-var/spec-term-store^)
+       (== `(subsumes-termo ,generic-te ,specific-te) expr)
+       ;; inspired by https://www.swi-prolog.org/pldoc/man?predicate=subsumes_term%2f2
+       (== `(,s . ,c) s/c)
+       (eval-schemeo generic-te env generic)
+       (eval-schemeo specific-te env specific)
+       (conde
+         [(== #f gen-var/spec-term-store^) (== '() $)]
+         [(=/= #f gen-var/spec-term-store^)
+          ;; upon success, use the original unextended state
+          (== `((,s . ,c)) $)])
+       (subsumes-term-auxo generic specific s '() gen-var/spec-term-store^))]
     [(fresh (c*)
        (== `(conde . ,c*) expr)
        (eval-conde-clauses c* s/c env $))]
