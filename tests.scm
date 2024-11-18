@@ -1,6 +1,23 @@
 (load "faster-miniKanren/test-check.scm")
 (load "midoriKanren.scm")
 
+(test "copy-term-4o-1"
+  (run* (x)
+    (eval-programo
+     `(run* (z)
+        (fresh (vars-in-e vars-out-e in-e out-e a b c)
+          (== (cons vars-in-e (cons in-e (cons vars-out-e (cons out-e '())))) z)
+          (== (cons a (cons b '())) vars-in-e)
+          (== (cons b (cons 'cat (cons c (cons a (cons b '()))))) in-e)
+          (copy-term-4o vars-in-e in-e vars-out-e out-e)))
+     x))
+  '(((((_. . ()) (_. . (()))) ;; vars-in-e
+      ((_. . (())) cat (_. . ((()))) (_. . ()) (_. . (()))) ;; in-e
+      ((_. . (((())))) (_. . ((((())))))) ;; vars-out-e
+      ((_. . ((((()))))) cat (_. . ((()))) (_. . (((())))) (_. . ((((())))))) ;; out-e
+      ))))
+
+
 (test "copy-term-lookupo-1"
   (run* (var var^ var/var^-store)
     (== `(var . ()) var)

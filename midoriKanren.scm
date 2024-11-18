@@ -325,6 +325,28 @@
          (copy-term-auxo a a-copy s c c^^ var/var^-store var/var^-store^^)
          (copy-term-auxo d d-copy s c^^ c^ var/var^-store^^ var/var^-store^))])))
 
+(define (copy-term-4auxo in-unwalked in-copy s var/var^-store)
+  (fresh (in)
+    (walko in-unwalked s in)
+    (conde
+      [(numbero in) (== in in-copy)]
+      [(symbolo in) (== in in-copy)]
+      [(booleano in) (== in in-copy)]
+      [(== '() in) (== in in-copy)]
+      [(var?o in)
+       (fresh (var^)
+         (conde
+           ((== #f var^) (== in in-copy))
+           ((var?o var^) (== var^ in-copy)))
+         (copy-term-lookupo in var/var^-store var^))]      
+      [(fresh (a d a-copy d-copy)
+         (== `(,a . ,d) in)
+         (== `(,a-copy . ,d-copy) in-copy)
+         (=/= 'var a)
+         (=/= 'var a-copy)
+         (copy-term-4auxo a a-copy s var/var^-store)
+         (copy-term-4auxo d d-copy s var/var^-store))])))
+
 (define (eval-gexpro expr s/c env $)
   (conde
     [(fresh (ge)
@@ -366,8 +388,23 @@
        (copy-term-auxo t1 t1-copy s c c^ '() _)
        (conde
          [(== #f s^) (== '() $)]
-         [(=/= #f s^) (== `((,s^ . ,c^)) $)])       
+         [(=/= #f s^) (== `((,s^ . ,c^)) $)])
        (unifyo t1-copy t2 s s^))]
+    [(fresh (vars-in-e vars-in vars-in-copy in-e in in-copy vars-out-e vars-out out-e out s c s^ c^ var/var^-store^)
+       ;; interface based on:
+       ;; https://www.swi-prolog.org/pldoc/doc_for?object=copy_term/4
+       (== `(copy-term-4o ,vars-in-e ,in-e ,vars-out-e ,out-e) expr)
+       (== `(,s . ,c) s/c)
+       (eval-schemeo vars-in-e env vars-in)
+       (eval-schemeo vars-out-e env vars-out)
+       (eval-schemeo in-e env in)
+       (eval-schemeo out-e env out)
+       (copy-term-auxo vars-in vars-in-copy s c c^ '() var/var^-store^)
+       (copy-term-4auxo in in-copy s var/var^-store^)
+       (conde
+         [(== #f s^) (== '() $)]
+         [(=/= #f s^) (== `((,s^ . ,c^)) $)])
+       (unifyo `(,vars-in-copy . ,in-copy) `(,vars-out . ,out) s s^))]
     [(fresh (id params geb ge ge* env^)
        (== `(letrec-rel ((,id ,params ,geb)) ,ge . ,ge*) expr)
        (symbolo id)
