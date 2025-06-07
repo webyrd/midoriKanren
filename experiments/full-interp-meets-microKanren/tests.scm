@@ -1407,6 +1407,31 @@
       q)))
   '((cat)))
 
+;; From Nada
+(test "evalo-run*/project-2.0"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (project (y)
+             (== (car y) x))
+           (== y '(cat))))
+      q)))
+  '())
+
+(test "evalo-run*/project-2.1"
+  (time
+   (run* (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (project (y)
+             (== y x))
+           (== y '(cat))))
+      q)))
+  '(((cat))))
+
 
 
 #|
@@ -1853,3 +1878,16 @@ mixing and matching of Scheme and miniKanren code.
       '((a b c d)))))
   '(((a b) (c d e))))
 |#
+
+(printf "this one is slowww...")
+(test "evalo-run*/project-2.2"
+  (time
+   (run 2 (q)
+     (evalo
+      `(run* (x)
+         (fresh (y)
+           (project (y)
+             (== ,q x))
+           (== y '(cat))))
+      '((cat)))))
+  '('(cat) y))
