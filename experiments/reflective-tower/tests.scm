@@ -348,16 +348,17 @@
 reifiers:
 
 scheme->scheme
-(mu (e r) <scheme value expression>)
+(mu (e* r) <scheme value expression>)
 
 mk->mk
-(muo (ges) <goal expression>)
+(muo (ge*) <goal expression>)
 
 mk->scheme
-(muos (s) <scheme value expression>)
+(muos (state) <scheme value expression>)
 
 scheme->mk
 (muso (x) <goal expression>)
+x = logic variable (think query variable)
 
 ---------------------
 
