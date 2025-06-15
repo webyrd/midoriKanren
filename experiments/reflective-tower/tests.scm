@@ -369,7 +369,7 @@ explicit environment variable (the r in mu), whereas in the first
 case muo needs an r.  Nada thinks we want the middle case, in which
 (== a 5) would become (== 5 5), but the structure of the goal expression
 would be preserved for manipulation in muo.  Similar reasoning
-would presumably apply to evaluating the y in (fresh (y) (== x y)).
+would presumably apply to evaluating the x in (fresh (y) (== x y)).
 
 Perhaps we want versions 1 and 2.
 
