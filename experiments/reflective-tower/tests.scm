@@ -342,7 +342,6 @@
 #!eof
 
 #|
-
 ---------------------
 
 reifiers:
@@ -372,9 +371,17 @@ in miniKanren context
 
 ---------------------
 
-TODO: what do we want to reify apart from the goal expressions? Maybe the state? Maybe the extension to the stream? Maybe can you tell if a goal fails (not relational!)? Maybe collecting semantics?
+TODO: what do we want to reify apart from the goal expressions? Maybe
+the state? Maybe the extension to the stream? Maybe can you tell if a
+goal fails (not relational!)? Maybe collecting semantics?
 
-TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) becomes (e r k) for mu and meaning.  What about for the miniKanren versions?  (e r sk fk) perhaps?  (e r bind) or (e r mplus) or (e r bind mplus) or (e r $) or something like that?  Or keep it (e r k)?  Or perhaps represent a continuation as a list of goals to be run still (or goal expressions)?  Does the mk version need a constraint store as well as an r?
+TODO: consider a version that uses CPS/continuations, as in Blond.  (e
+r) becomes (e r k) for mu and meaning.  What about for the miniKanren
+versions?  (e r sk fk) perhaps?  (e r bind) or (e r mplus) or
+(e r bind mplus) or (e r $) or something like that?  Or keep it (e r k)?
+Or perhaps represent a continuation as a list of goals to be run
+still (or goal expressions)?  Does the mk version need a constraint
+store as well as an r?
 
 |#
 
@@ -382,7 +389,12 @@ TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) become
   (run* (q)
     (eval-programo `(run* (z)
                       ((muo (ges)
-                            ;; TODO: what do we want to reify apart from the goal expressions? Maybe the state? Maybe the extension to the stream? Maybe can you tell if a goal fails (not relational!)? Maybe collecting semantics?
+                            ;; TODO: what do we want to reify apart
+                            ;; from the goal expressions? Maybe the
+                            ;; state? Maybe the extension to the
+                            ;; stream? Maybe can you tell if a goal
+                            ;; fails (not relational!)? Maybe
+                            ;; collecting semantics?
                          (fresh (ge1 ge2)
                            (== ges (cons ge1 (cons ge2 '())))
                            (meaningo ge2)))
@@ -431,7 +443,8 @@ TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) become
 (test "refl-muos-1"
   (run* (q)
     (eval-programo `(run* (z)
-                      ;; basically, a lambda escape in regular miniKanren
+                      ;; basically, a lambda escape in regular
+                      ;; miniKanren
                       (muos (s)
                         (log 'z (walk* z s)))
                       )
@@ -501,7 +514,8 @@ TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) become
       '((cat dog fish rat)))))
   '((l cons appendo append)))
 
-;; this aqua test doesn't work, since midoriKanren doesn't support lambda
+;; this aqua test doesn't work, since midoriKanren doesn't support
+;; lambda
 (test "refl-6"
   (run* (q)
     (eval-programo `(run* (z)
