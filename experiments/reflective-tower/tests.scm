@@ -346,17 +346,36 @@
 
 reifiers:
 
-scheme->scheme
-(mu (e* r) <scheme value expression>)
+(mu (e* r) <scheme value expression>) ;; scheme->scheme
 
-mk->mk
-(muo (ge*) <goal expression>)
 
-mk->scheme
-(muos (state) <scheme value expression>)
+(muo (ge*) <goal expression>) ;; mk->mk
 
-scheme->mk
-(muso (x) <goal expression>)
+We can imagine at multiple possible behaviors for 'muo', depending on
+how eagerly the goal expressions are evaluated before they are passed
+into muo.  For example, for
+
+(let ((a 5))
+  (fresh (x)
+    ((muo (ge*) my-ge) (== a 5) (fresh (y) (== x y)))))
+
+we could pass the totally unevaluated goal expression (== a 5) into
+muo.  Or we could evaluate the a and 5 in (== a 5) to get the goal
+expression (== 5 5), which would then be passed into muo.  Or we could
+evaluate (== a 5) completely in (midoriKanren's) Scheme evaluator to
+produce a goal, instead of a goal expression, which would be passed
+into muo.  In the second and third cases, muo doesn't require an
+explicit environment variable (the r in mu), whereas in the first
+case muo needs an r.  Nada thinks we want the middle case, in which
+(== a 5) would become (== 5 5), but the structure of the goal expression
+would be preserved for manipulation in muo.  Similar reasoning
+would presumably apply to evaluating the y in (fresh (y) (== x y)).
+
+
+(muos (state) <scheme value expression>) ;; mk->scheme
+
+
+(muso (x) <goal expression>) ;; scheme->mk
 x = logic variable (think query variable)
 
 ---------------------
