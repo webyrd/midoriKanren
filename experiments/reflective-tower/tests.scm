@@ -344,7 +344,15 @@
 #|
 ---------------------
 
-reifiers:
+REIFIERS
+
+Naming convention:
+
+muXY, where Y is the language outside the mu, and X is the language
+inside the mu. For ss, we just omit. For oo, we just use o. Then we
+have os, for nested run from Scheme context, and so for goal written
+in Scheme.
+
 
 (mu (e* r) <scheme value expression>) ;; scheme->scheme
 
@@ -374,15 +382,19 @@ would presumably apply to evaluating the x in (fresh (y) (== x y)).
 Perhaps we want versions 1 and 2.
 
 
-(muos (state) <scheme value expression>) ;; mk->scheme
+(muso (state) <scheme value expression>) ;; mk->scheme
+
+basically, a lambda escape in regular miniKanren
 
 
-(muso (x) <goal expression>) ;; scheme->mk
+(muos (x) <goal expression>) ;; scheme->mk
 x = logic variable (think query variable)
+
+like a nested run
 
 ---------------------
 
-reflectors:
+REFLECTORS
 
 in Scheme context
 (meaning <scheme value expression> r)
@@ -410,12 +422,6 @@ store as well as an r?
   (run* (q)
     (eval-programo `(run* (z)
                       ((muo (ges)
-                            ;; TODO: what do we want to reify apart
-                            ;; from the goal expressions? Maybe the
-                            ;; state? Maybe the extension to the
-                            ;; stream? Maybe can you tell if a goal
-                            ;; fails (not relational!)? Maybe
-                            ;; collecting semantics?
                          (fresh (ge1 ge2)
                            (== ges (cons ge1 (cons ge2 '())))
                            (meaningo ge2)))
@@ -461,24 +467,18 @@ store as well as an r?
                    q))
   '((_.0)))
 
-(test "refl-muos-1"
-  (run* (q)
-    (eval-programo `(run* (z)
-                      ;; basically, a lambda escape in regular
-                      ;; miniKanren
-                      (muos (s)
-                        (log 'z (walk* z s)))
-                      )
-                   q))
-  '((_.0)))
-
 (test "refl-muso-1"
   (run* (q)
     (eval-programo `(run* (z)
-                      ;; like a nested run
-                      (==
-                       (muso (x) (== x 1))
-                       1))
+                      (muso (s)
+                        (log 'z (walk* z s))))
+                   q))
+  '((_.0)))
+
+(test "refl-muos-1"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      (== (muos (x) (== x 1)) 1))
                    q))
   '((_.0)))
 
