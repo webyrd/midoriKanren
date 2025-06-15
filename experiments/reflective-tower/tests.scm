@@ -371,6 +371,8 @@ case muo needs an r.  Nada thinks we want the middle case, in which
 would be preserved for manipulation in muo.  Similar reasoning
 would presumably apply to evaluating the y in (fresh (y) (== x y)).
 
+Perhaps we want versions 1 and 2.
+
 
 (muos (state) <scheme value expression>) ;; mk->scheme
 
