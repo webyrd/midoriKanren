@@ -341,14 +341,46 @@
 
 #!eof
 
+#|
+
+---------------------
+
+mu        scheme->scheme
+(mu (e r) <scheme value expression>)
+
+muo       mk->mk
+(muo (ges) <goal expression>)
+
+muos      mk->scheme
+(muos (s) <scheme value expression>)
+
+muso      scheme->mk
+(muso (x) <goal expression>)
+
+---------------------
+
+meaning   in Scheme context
+(meaning <scheme value expression> r)
+
+meaningo  in miniKanren context
+(meaningo <goal expression>)
+
+---------------------
+
+TODO: what do we want to reify apart from the goal expressions? Maybe the state? Maybe the extension to the stream? Maybe can you tell if a goal fails (not relational!)? Maybe collecting semantics?
+
+TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) becomes (e r k) for mu and meaning.  What about for the miniKanren versions?  (e r sk fk) perhaps?  (e r bind) or (e r mplus) or (e r bind mplus) or (e r $) or something like that?  Or keep it (e r k)?  Or perhaps represent a continuation as a list of goals to be run still (or goal expressions)?  Does the mk version need a constraint store as well as an r?
+
+|#
+
 (test "refl-muo-1"
   (run* (q)
     (eval-programo `(run* (z)
                       ((muo (ges)
                             ;; TODO: what do we want to reify apart from the goal expressions? Maybe the state? Maybe the extension to the stream? Maybe can you tell if a goal fails (not relational!)? Maybe collecting semantics?
-                            (fresh (ge1 ge2)
-                              (== ges (cons ge1 (cons ge2 '())))
-                              (meaningo ge2)))
+                         (fresh (ge1 ge2)
+                           (== ges (cons ge1 (cons ge2 '())))
+                           (meaningo ge2)))
                        (== 1 0) (== 1 1)))
                    q))
   '((_.0)))
@@ -358,7 +390,7 @@
     (eval-programo `(run* (z)
                       ;; basically, a lambda escape in regular miniKanren
                       (muos (s)
-                            (log 'z (walk* z s)))
+                        (log 'z (walk* z s)))
                       )
                    q))
   '((_.0)))
