@@ -390,6 +390,44 @@ TODO: consider a version that uses CPS/continuations, as in Blond.  (e r) become
                    q))
   '((_.0)))
 
+(test "refl-muo-2"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      (let ((a 5))
+                        ((muo (ges)
+                           (fresh (ge1 ge2)
+                             (== ges (cons ge1 (cons ge2 '())))
+                             (meaningo ge2)))
+                         (== 0 1) (== a 5))))
+                   q))
+  '((_.0)))
+
+(test "refl-muo-3"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      (let ((a 6))
+                        ((muo (ges)
+                           (fresh (ge1 ge2)
+                             (== ges (cons ge1 (cons ge2 '())))
+                             (meaningo ge2)))
+                         (== 0 1) (== a 5))))
+                   q))
+  '(()))
+
+(test "refl-muo-4"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      (fresh (x)
+                        (fresh (a)
+                          (== (cons a '()) x))
+                        ((muo (ges)
+                           (fresh (ge1 ge2)
+                             (== ges (cons ge1 (cons ge2 '())))
+                             (meaningo ge2)))
+                         (== 0 1) (== (cons 5 '()) x))))
+                   q))
+  '((_.0)))
+
 (test "refl-muos-1"
   (run* (q)
     (eval-programo `(run* (z)
