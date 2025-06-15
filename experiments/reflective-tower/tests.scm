@@ -345,6 +345,8 @@
 
 ---------------------
 
+reifiers:
+
 mu        scheme->scheme
 (mu (e r) <scheme value expression>)
 
@@ -358,6 +360,8 @@ muso      scheme->mk
 (muso (x) <goal expression>)
 
 ---------------------
+
+reflectors:
 
 meaning   in Scheme context
 (meaning <scheme value expression> r)
