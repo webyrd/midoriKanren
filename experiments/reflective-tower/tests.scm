@@ -347,26 +347,26 @@
 
 reifiers:
 
-mu        scheme->scheme
+scheme->scheme
 (mu (e r) <scheme value expression>)
 
-muo       mk->mk
+mk->mk
 (muo (ges) <goal expression>)
 
-muos      mk->scheme
+mk->scheme
 (muos (s) <scheme value expression>)
 
-muso      scheme->mk
+scheme->mk
 (muso (x) <goal expression>)
 
 ---------------------
 
 reflectors:
 
-meaning   in Scheme context
+in Scheme context
 (meaning <scheme value expression> r)
 
-meaningo  in miniKanren context
+in miniKanren context
 (meaningo <goal expression>)
 
 ---------------------
