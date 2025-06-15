@@ -341,6 +341,40 @@
 
 #!eof
 
+(test "refl-muo-1"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      ((muo (ges)
+                            ;; TODO: what do we want to reify apart from the goal expressions? Maybe the state? Maybe the extension to the stream? Maybe can you tell if a goal fails (not relational!)? Maybe collecting semantics?
+                            (fresh (ge1 ge2)
+                              (== ges (cons ge1 (cons ge2 '())))
+                              (meaningo ge2)))
+                       (== 1 0) (== 1 1)))
+                   q))
+  '((_.0)))
+
+(test "refl-muos-1"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      ;; basically, a lambda escape in regular miniKanren
+                      (muos (s)
+                            (log 'z (walk* z s)))
+                      )
+                   q))
+  '((_.0)))
+
+(test "refl-muso-1"
+  (run* (q)
+    (eval-programo `(run* (z)
+                      ;; like a nested run
+                      (==
+                       (muso (x) (== x 1))
+                       1))
+                   q))
+  '((_.0)))
+
+#!eof
+
 ;; running these backwards seems super slow, at best
 
 (test "refl-8-backwards-0"
