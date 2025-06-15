@@ -390,7 +390,7 @@ basically, a lambda escape in regular miniKanren
 (muos (x) <goal expression>) ;; scheme->mk
 x = logic variable (think query variable)
 
-like a run
+like a nested run
 
 ---------------------
 
