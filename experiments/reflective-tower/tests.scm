@@ -440,7 +440,13 @@ in order to evaluate the goal expressions.
   (rembero x '(a b c) w)
   ))
 
-* Might want to bind a variable to the state or the stream of answers produced by running the final ge* assembled in the body of muo (depending on whether we want individual answer semantics or collecting semantics):
+Can manipulate the ge* lists to construct a new ge* to be run.  Can
+inspect ge's, reorder, delay, etc.
+
+* Might want to bind a variable to the state or the stream of answers
+produced by running the final ge* assembled in the body of
+muo (depending on whether we want individual answer semantics or
+collecting semantics):
 
 (muo (input-ge* cont-ge* r)
   <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>
@@ -456,9 +462,14 @@ or perhaps
 
 Do we need a logic variable or term to reify?
 
-* Think about miniKanren with a Blond-style interface for reification/reflection instead of run n/run*.
+* Think about miniKanren with a Blond-style interface for
+reification/reflection instead of run n/run*.
 
-* Nada and I think it would be interesting and useful to have different reifiers at different levels, instead of having the outer run reifier for miniKanren.  Perhaps muo or muso or meaningo or whatever should take a (miniKanren-ish) reifer as an explicit argument, just like it might take an r or a k.
+* Nada and I think it would be interesting and useful to have
+different reifiers at different levels, instead of having the outer
+run reifier for miniKanren.  Perhaps muo or muso or meaningo or
+whatever should take a (miniKanren-ish) reifer as an explicit
+argument, just like it might take an r or a k.
 
 * Nada wants composable and programmable reifiers
 
