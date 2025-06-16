@@ -456,7 +456,9 @@ or perhaps
 
 Do we need a logic variable or term to reify?
 
-How 
+* Think about miniKanren with a Blond-style interface for reification/reflection instead of run n/run*.
+
+* Nada and I think it would be interesting and useful to have different reifiers at different levels, instead of having the outer run reifier for miniKanren.  Perhaps muo or muso or meaningo or whatever should take a (miniKanren-ish) reifer as an explicit argument, just like it might take an r or a k.
 
 * Nada wants composable and programmable reifiers
 
