@@ -422,6 +422,8 @@ Thoughts, from Nada and Will discussions:
 * Instead of thinking about a tower, think about interface between
 Scheme and miniKanren.
 
+* Create a Quine that spans Scheme and miniKanren levels.
+
 * Delayed goals, staged-miniKanren, NBE can all be helpful in thinking
 about the interface.
 
