@@ -416,6 +416,31 @@ Or perhaps represent a continuation as a list of goals to be run
 still (or goal expressions)?  Does the mk version need a constraint
 store as well as an r?
 
+
+Thoughts, from Nada and Will discussions:
+
+* Instead of thinking about a tower, think about interface between
+Scheme and miniKanren.
+
+* Delayed goals, staged-miniKanren, NBE can all be helpful in thinking
+about the interface.
+
+* Instead of a 'k' argument, perhaps take a ge* argument representing
+the goal expressions yet to be run, in addition to a separate ge* as a
+list of "input" goal expressions.  Might also want an 'r' environment
+in order to evaluate the goal expressions.
+
+(fresh (w x z)
+  (appendo '(a b c) '(d e) z)
+  (delay <some delayed goal ge1>)
+  ((muo (input-ge* cont-ge* r)
+   <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>)
+  (== a 5) (fresh (y) (== x y)) ;; these two goal expressions are passed in to muo as input-ge*
+  (delay <some delayed goal ge2>) ;; this goal, the following goal, and (delay <some delayed goal ge1>) as cont-ge*
+  (rembero x '(a b c) w)
+  ))
+
+
 |#
 
 (test "refl-muo-1"
