@@ -434,11 +434,29 @@ in order to evaluate the goal expressions.
   (appendo '(a b c) '(d e) z)
   (delay <some delayed goal ge1>)
   ((muo (input-ge* cont-ge* r)
-   <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>)
+     <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>)
   (== a 5) (fresh (y) (== x y)) ;; these two goal expressions are passed in to muo as input-ge*
   (delay <some delayed goal ge2>) ;; this goal, the following goal, and (delay <some delayed goal ge1>) as cont-ge*
   (rembero x '(a b c) w)
   ))
+
+* Might want to bind a variable to the state or the stream of answers produced by running the final ge* assembled in the body of muo (depending on whether we want individual answer semantics or collecting semantics):
+
+(muo (input-ge* cont-ge* r)
+  <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>
+  (state)
+  <another ge* that will receive state>)
+
+or perhaps
+
+(muo (input-ge* cont-ge* r)
+  <construct ge* to be run from input-ge* and cont-ge*, in the context of environment r>
+  ($)
+  <another ge* that will be bound to $>)
+
+Do we need a logic variable or term to reify?
+
+How 
 
 * Nada wants composable and programmable reifiers
 
