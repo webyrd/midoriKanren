@@ -440,6 +440,7 @@ in order to evaluate the goal expressions.
   (rembero x '(a b c) w)
   ))
 
+* Nada wants composable and programmable reifiers
 
 |#
 
